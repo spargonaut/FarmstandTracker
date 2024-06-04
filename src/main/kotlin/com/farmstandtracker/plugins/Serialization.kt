@@ -48,8 +48,8 @@ fun Application.configureSerialization(farmstandRepository: FarmstandRepository)
                 }
             }
 
-            delete("/{farmstand}") {
-                val name = call.parameters["farmstand"]
+            delete("/{farmstandName}") {
+                val name = call.parameters["farmstandName"]
                 if (name == null) {
                     call.respond(HttpStatusCode.BadRequest)
                     return@delete
