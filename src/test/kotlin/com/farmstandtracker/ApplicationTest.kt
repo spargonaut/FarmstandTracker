@@ -89,4 +89,32 @@ class ApplicationTest {
             .map { it.name }
         assertEquals(farmstandNamesAfterDeleting, originalFarmstandsNames)
     }
+
+    @Test
+    fun `farm stands can be retrieved by name`() = testApplication {
+        val client = createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+        }
+
+        val farmstandName = "swimming"
+        val initDate = LocalDate(2024, 4, 1)
+
+        val farmstand = Farmstand(farmstandName, initDate)
+        val response1 = client.post("/farmstands") {
+            header(
+                HttpHeaders.ContentType,
+                ContentType.Application.Json
+            )
+
+            setBody(farmstand)
+        }
+        assertEquals(HttpStatusCode.NoContent, response1.status)
+
+        val urlString = "farmstands/byName/${farmstandName}"
+        val retrievedFarmstand = client.get(urlString).body<Farmstand>()
+
+        assertEquals(retrievedFarmstand, farmstand)
+    }
 }
