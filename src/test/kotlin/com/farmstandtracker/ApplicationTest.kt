@@ -1,6 +1,7 @@
 package com.farmstandtracker
 
 import com.farmstandtracker.model.Farmstand
+import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.delete
@@ -25,16 +26,9 @@ class ApplicationTest {
             }
         }
 
-        val farmstand = Farmstand("swimming", LocalDate(2024, 4, 1))
-        val response1 = client.post("/farmstands") {
-            header(
-                HttpHeaders.ContentType,
-                ContentType.Application.Json
-            )
+        val farmstand = createFarmstand()
 
-            setBody(farmstand)
-        }
-        assertEquals(HttpStatusCode.NoContent, response1.status)
+        createFarmstandWithPost(client, farmstand)
 
         val response2 = client.get("/farmstands")
         assertEquals(HttpStatusCode.OK, response2.status)
@@ -43,7 +37,7 @@ class ApplicationTest {
             .body<List<Farmstand>>()
             .map { it.name }
 
-        assertContains(farmstandsNames, "swimming")
+        assertContains(farmstandsNames, farmstand.name)
     }
 
     @Test
@@ -56,28 +50,19 @@ class ApplicationTest {
 
         val initialResponse = client.get("/farmstands")
         assertEquals(HttpStatusCode.OK, initialResponse.status)
-
         val originalFarmstandsNames = initialResponse
             .body<List<Farmstand>>()
             .map { it.name }
 
-        val farmstand = Farmstand("swimming", LocalDate(2024, 4, 1))
-        val response1 = client.post("/farmstands") {
-            header(
-                HttpHeaders.ContentType,
-                ContentType.Application.Json
-            )
-
-            setBody(farmstand)
-        }
-        assertEquals(HttpStatusCode.NoContent, response1.status)
+        val farmstand = createFarmstand()
+        createFarmstandWithPost(client, farmstand)
 
         val responseAfterAdding = client.get("/farmstands")
         assertEquals(HttpStatusCode.OK, responseAfterAdding.status)
         val farmstandsNames = responseAfterAdding
             .body<List<Farmstand>>()
             .map { it.name }
-        assertContains(farmstandsNames, "swimming")
+        assertContains(farmstandsNames, farmstand.name)
 
         val deleteResponse =  client.delete("/farmstands/swimming")
         assertEquals(HttpStatusCode.NoContent, deleteResponse.status)
@@ -98,10 +83,21 @@ class ApplicationTest {
             }
         }
 
-        val farmstandName = "swimming"
-        val initDate = LocalDate(2024, 4, 1)
+        val farmstand = createFarmstand()
+        createFarmstandWithPost(client, farmstand)
 
-        val farmstand = Farmstand(farmstandName, initDate)
+        val urlString = "farmstands/byName/${farmstand.name}"
+        val retrievedFarmstand = client.get(urlString).body<Farmstand>()
+
+        assertEquals(retrievedFarmstand, farmstand)
+    }
+
+    private fun createFarmstand(
+        name: String = "swimming",
+        initDate: LocalDate = LocalDate(2024, 4, 1)
+    ) = Farmstand(name, initDate)
+
+    private suspend fun createFarmstandWithPost(client: HttpClient, farmstand: Farmstand) {
         val response1 = client.post("/farmstands") {
             header(
                 HttpHeaders.ContentType,
@@ -111,10 +107,5 @@ class ApplicationTest {
             setBody(farmstand)
         }
         assertEquals(HttpStatusCode.NoContent, response1.status)
-
-        val urlString = "farmstands/byName/${farmstandName}"
-        val retrievedFarmstand = client.get(urlString).body<Farmstand>()
-
-        assertEquals(retrievedFarmstand, farmstand)
     }
 }
