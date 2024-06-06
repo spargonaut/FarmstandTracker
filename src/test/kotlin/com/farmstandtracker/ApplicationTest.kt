@@ -19,7 +19,7 @@ import kotlin.test.*
 
 class ApplicationTest {
     @Test
-    fun newFarmstandsCanBeAddedAndRetrieved() = testApplication {
+    fun `new farmstands can be added and retrieved`() = testApplication {
         val client = createClient {
             install(ContentNegotiation) {
                 json()
@@ -41,7 +41,7 @@ class ApplicationTest {
     }
 
     @Test
-    fun farmstandsCanBeDeletedByName() = testApplication {
+    fun `farmstands can be deleted by name`() = testApplication {
         val client = createClient {
             install(ContentNegotiation) {
                 json()
@@ -76,7 +76,7 @@ class ApplicationTest {
     }
 
     @Test
-    fun `farm stands can be retrieved by name`() = testApplication {
+    fun `farmstands can be retrieved by name`() = testApplication {
         val client = createClient {
             install(ContentNegotiation) {
                 json()
