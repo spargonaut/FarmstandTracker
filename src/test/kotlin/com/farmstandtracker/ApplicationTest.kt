@@ -92,6 +92,20 @@ class ApplicationTest {
         assertEquals(retrievedFarmstand, farmstand)
     }
 
+    @Test
+    fun `retrieving a farmstand by name with a bad name produces a NotFound response`() = testApplication {
+        val client = createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+        }
+
+        val urlString = "/farmstands/byName/bad-name"
+        val responseStatus = client.get(urlString).status
+        assertEquals(HttpStatusCode.NotFound, responseStatus)
+
+    }
+
     private fun createFarmstand(
         name: String = "swimming",
         initDate: LocalDate = LocalDate(2024, 4, 1)
