@@ -1,0 +1,23 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###
+
+### GET all
+GET http://0.0.0.0:8080/farmstand
+
+
+### GET by name
+GET http://0.0.0.0:8080/farmstand/byName/strawberries
+
+
+### POST
+POST http://0.0.0.0:8080/farmstand
+Content-Type: application/json
+
+{ "name" : "onions", "initDate": "2012-04-23" }
+
+
+### DELETE
+DELETE http://0.0.0.0:8080/farmstand/Strawberries
