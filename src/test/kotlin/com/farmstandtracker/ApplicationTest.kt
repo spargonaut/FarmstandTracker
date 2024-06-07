@@ -30,7 +30,7 @@ class ApplicationTest {
 
         createFarmstandWithPost(client, farmstand)
 
-        val response2 = client.get("/farmstands")
+        val response2 = client.get("/farmstand")
         assertEquals(HttpStatusCode.OK, response2.status)
 
         val farmstandsNames = response2
@@ -48,7 +48,7 @@ class ApplicationTest {
             }
         }
 
-        val initialResponse = client.get("/farmstands")
+        val initialResponse = client.get("/farmstand")
         assertEquals(HttpStatusCode.OK, initialResponse.status)
         val originalFarmstandsNames = initialResponse
             .body<List<Farmstand>>()
@@ -57,17 +57,17 @@ class ApplicationTest {
         val farmstand = createFarmstand()
         createFarmstandWithPost(client, farmstand)
 
-        val responseAfterAdding = client.get("/farmstands")
+        val responseAfterAdding = client.get("/farmstand")
         assertEquals(HttpStatusCode.OK, responseAfterAdding.status)
         val farmstandsNames = responseAfterAdding
             .body<List<Farmstand>>()
             .map { it.name }
         assertContains(farmstandsNames, farmstand.name)
 
-        val deleteResponse =  client.delete("/farmstands/swimming")
+        val deleteResponse =  client.delete("/farmstand/swimming")
         assertEquals(HttpStatusCode.NoContent, deleteResponse.status)
 
-        val responseAfterDeleting = client.get("/farmstands")
+        val responseAfterDeleting = client.get("/farmstand")
         assertEquals(HttpStatusCode.OK, responseAfterDeleting.status)
         val farmstandNamesAfterDeleting = responseAfterDeleting
             .body<List<Farmstand>>()
@@ -86,7 +86,7 @@ class ApplicationTest {
         val farmstand = createFarmstand()
         createFarmstandWithPost(client, farmstand)
 
-        val urlString = "farmstands/byName/${farmstand.name}"
+        val urlString = "farmstand/byName/${farmstand.name}"
         val retrievedFarmstand = client.get(urlString).body<Farmstand>()
 
         assertEquals(retrievedFarmstand, farmstand)
@@ -100,7 +100,7 @@ class ApplicationTest {
             }
         }
 
-        val urlString = "/farmstands/byName/bad-name"
+        val urlString = "/farmstand/byName/bad-name"
         val responseStatus = client.get(urlString).status
         assertEquals(HttpStatusCode.NotFound, responseStatus)
 
@@ -112,7 +112,7 @@ class ApplicationTest {
     ) = Farmstand(name, initDate)
 
     private suspend fun createFarmstandWithPost(client: HttpClient, farmstand: Farmstand) {
-        val response1 = client.post("/farmstands") {
+        val response1 = client.post("/farmstand") {
             header(
                 HttpHeaders.ContentType,
                 ContentType.Application.Json
