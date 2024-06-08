@@ -12,12 +12,24 @@ GET http://0.0.0.0:8080/farmstand
 GET http://0.0.0.0:8080/farmstand/byName/strawberries
 
 
-### POST
+### POST - Create a farmstand
 POST http://0.0.0.0:8080/farmstand
 Content-Type: application/json
 
 { "name" : "onions", "initDate": "2012-04-23" }
 
+
+### POST - Shutdown a farmstand - this should be successful the first time it is run after starting the app
+POST http://0.0.0.0:8080/farmstand/Strawberries
+Content-Type: application/json
+
+{ "shutdownDate": "2012-04-25" }
+
+### POST - Shutdown a farmstand - this should be fail (404)
+POST http://0.0.0.0:8080/farmstand/Leafy%20Green
+Content-Type: application/json
+
+{ "shutdownDate": "2012-04-25" }
 
 ### DELETE
 DELETE http://0.0.0.0:8080/farmstand/Strawberries
