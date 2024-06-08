@@ -2,6 +2,7 @@ package com.farmstandtracker.plugins
 
 import com.farmstandtracker.model.Farmstand
 import com.farmstandtracker.model.FarmstandRepository
+import com.farmstandtracker.model.FarmstandShutdown
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.JsonConvertException
 import io.ktor.serialization.kotlinx.json.*
@@ -48,16 +49,38 @@ fun Application.configureSerialization(farmstandRepository: FarmstandRepository)
                 }
             }
 
-            delete("/{farmstandName}") {
-                val name = call.parameters["farmstandName"]
-                if (name == null) {
-                    call.respond(HttpStatusCode.BadRequest)
-                    return@delete
+            route("/{farmstandName}") {
+                delete {
+                    val name = call.parameters["farmstandName"]
+                    if (name == null) {
+                        call.respond(HttpStatusCode.BadRequest)
+                        return@delete
+                    }
+                    if (farmstandRepository.removeFarmstand(name)) {
+                        call.respond(HttpStatusCode.NoContent)
+                    } else {
+                        call.respond(HttpStatusCode.NotFound)
+                    }
                 }
-                if (farmstandRepository.removeFarmstand(name)) {
-                    call.respond(HttpStatusCode.NoContent)
-                } else {
-                    call.respond(HttpStatusCode.NotFound)
+
+                post {
+                    try {
+                        val name = call.parameters["farmstandName"]
+                        val farmstandShutdown = call.receive<FarmstandShutdown>()
+                        if (name.isNullOrEmpty()) {
+                            call.respond(HttpStatusCode.BadRequest)
+                        } else if (farmstandRepository.shutdownFarmstand(name, farmstandShutdown)) {
+                            call.respond(HttpStatusCode.Accepted)
+                        } else {
+                            call.respond(HttpStatusCode.NotFound)
+                        }
+                    } catch (ex: IllegalStateException) {
+                        println(ex.message)
+                        println(ex.stackTrace)
+                        call.respond(HttpStatusCode.BadRequest)
+                    } catch (ex: JsonConvertException) {
+                        call.respond(HttpStatusCode.BadRequest)
+                    }
                 }
             }
         }

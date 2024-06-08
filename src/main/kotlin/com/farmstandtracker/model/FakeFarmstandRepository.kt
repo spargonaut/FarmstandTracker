@@ -24,4 +24,28 @@ class FakeFarmstandRepository : FarmstandRepository {
     override fun removeFarmstand(name: String): Boolean {
         return farmstands.removeIf { it.name == name }
     }
+
+    override fun shutdownFarmstand(name: String, farmstandShutdown: FarmstandShutdown): Boolean {
+        val farmstand = farmstands.find { fs ->
+            fs.name.equals(name, ignoreCase = true)
+        }
+
+        if (farmstand == null) return false
+        if (farmstand.shutdownDate != null) return false
+
+        val shutdownFarmstand = Farmstand(
+            name = farmstand.name,
+            initDate = farmstand.initDate,
+            shutdownDate = farmstandShutdown.shutdownDate,
+        )
+
+        farmstands.replaceAll {
+            if (it.name == shutdownFarmstand.name) {
+                shutdownFarmstand
+            } else {
+                it
+            }
+        }
+        return true
+    }
 }

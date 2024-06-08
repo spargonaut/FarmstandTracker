@@ -5,4 +5,5 @@ interface FarmstandRepository {
     fun farmstandByName(name: String): Farmstand?
     fun addFarmstand(farmstand: Farmstand)
     fun removeFarmstand(name: String): Boolean
+    fun shutdownFarmstand(name: String, farmstandShutdown: FarmstandShutdown): Boolean
 }

@@ -9,3 +9,8 @@ data class Farmstand(
     val initDate: LocalDate,
     val shutdownDate: LocalDate? = null
 )
+
+@Serializable
+data class FarmstandShutdown(
+    val shutdownDate: LocalDate
+)

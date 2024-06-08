@@ -1,6 +1,7 @@
 package com.farmstandtracker
 
 import com.farmstandtracker.model.Farmstand
+import com.farmstandtracker.model.FarmstandShutdown
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -104,6 +105,61 @@ class ApplicationTest {
         val responseStatus = client.get(urlString).status
         assertEquals(HttpStatusCode.NotFound, responseStatus)
 
+    }
+
+    @Test
+    fun `farmstand can be shutdown by name`() = testApplication {
+        val client = createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+        }
+
+        val farmstand = createFarmstand()
+        createFarmstandWithPost(client, farmstand)
+
+        val farmstandShutdown = FarmstandShutdown(LocalDate(2024, 5, 6))
+        val shutdownResponse = client.post("/farmstand/${farmstand.name}") {
+            header(
+                HttpHeaders.ContentType,
+                ContentType.Application.Json
+            )
+            setBody(farmstandShutdown)
+        }
+
+        assertEquals(HttpStatusCode.Accepted, shutdownResponse.status)
+    }
+
+    @Test
+    fun `repeated attempts to shutdown an already shutdown farmstand should be ignored`() = testApplication {
+        val client = createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+        }
+
+        val farmstand = createFarmstand()
+        createFarmstandWithPost(client, farmstand)
+
+        val originalFarmstandShutdown = FarmstandShutdown(LocalDate(2024, 5, 6))
+        client.post("/farmstand/${farmstand.name}") {
+            header(
+                HttpHeaders.ContentType,
+                ContentType.Application.Json
+            )
+            setBody(originalFarmstandShutdown)
+        }
+
+        val repeatedFarmstandShutdown = FarmstandShutdown(LocalDate(2024, 5, 8))
+        val secondShutdownResponse = client.post("/farmstand/${farmstand.name}") {
+            header(
+                HttpHeaders.ContentType,
+                ContentType.Application.Json
+            )
+            setBody(repeatedFarmstandShutdown)
+        }
+
+        assertEquals(HttpStatusCode.NotFound, secondShutdownResponse.status)
     }
 
     private fun createFarmstand(
