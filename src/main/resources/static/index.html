@@ -1,7 +1,214 @@
+<!-- TODO: DONE - get all FS -->
+<!-- TODO: DONE - create FS -->
+<!-- TODO: DONE: delete FS -->
+<!-- TODO: shutdown FS -->
+<!-- TODO: DONE - get FS by name -->
+
 <html>
 <head>
+    <title>A Simple SPA For Farmstands</title>
+    <script type="application/javascript">
+        function displayAllFarmstands() {
+            clearFarmstandTable();
+            fetchAllFarmstands().then(displayFarmstands)
+        }
+
+        // function displayTasksWithPriority() {
+        //     clearFarmstandTable();
+        //     const priority = readTaskPriority();
+        //     fetchTasksWithPriority(priority).then(displayFarmstands)
+        // }
+
+        function displayFarmstand(name) {
+            fetchFarmstandWithName(name).then(t =>
+                farmstandDisplay().innerHTML
+                    = `The ${t.name} farmstand was initialized on ${t.initDate}`
+            )
+        }
+
+        function deleteFarmstand(name) {
+            deleteFarmstandWithName(name).then(() => {
+                clearFarmstandDisplay();
+                displayAllFarmstands();
+            })
+        }
+
+        function deleteFarmstandWithName(name) {
+            return sendDELETE(`/farmstand/${name}`)
+        }
+
+        function addNewFarmstand() {
+            const farmstand = buildFarmstandFromForm();
+            sendPOST("/farmstand", farmstand).then(displayAllFarmstands);
+        }
+
+        function buildFarmstandFromForm() {
+            return {
+                name: getFarmstandFormValue("newFarmstandName"),
+                initDate: getFarmstandFormValue("newFarmstandInitDate"),
+            }
+        }
+
+        function getFarmstandFormValue(controlName) {
+            return document.addFarmstandForm[controlName].value;
+        }
+
+        function farmstandDisplay() {
+            return document.getElementById("currentFarmstandDisplay");
+        }
+
+        // function readTaskPriority() {
+        //     return document.priorityForm.priority.value
+        // }
+
+        // function fetchTasksWithPriority(priority) {
+        //     return sendGET(`/tasks/byPriority/${priority}`);
+        // }
+
+        function fetchFarmstandWithName(name) {
+            return sendGET(`/farmstand/byName/${name}`);
+        }
+
+        function fetchAllFarmstands() {
+            return sendGET("/farmstand")
+        }
+
+        function sendGET(url) {
+            return fetch(
+                url,
+                {headers: {'Accept': 'application/json'}}
+            ).then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+                return [];
+            });
+        }
+
+        function sendPOST(url, data) {
+            return fetch(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+        }
+
+        function sendDELETE(url) {
+            return fetch(url, {
+                method: "DELETE"
+            });
+        }
+
+        function farmstandTable() {
+            return document.getElementById("farmstandTableBody");
+        }
+
+        function clearFarmstandTable() {
+            farmstandTable().innerHTML = "";
+        }
+
+        function clearFarmstandDisplay() {
+            farmstandDisplay().innerText = "None";
+        }
+
+        function displayFarmstands(farmstands) {
+            const farmstandTableBody = farmstandTable()
+            farmstands.forEach(farmstand => {
+                const newRow = farmstandRow(farmstand);
+                farmstandTableBody.appendChild(newRow);
+            });
+        }
+
+        function farmstandRow(farmstand) {
+            return tr([
+                td(farmstand.name),
+                td(farmstand.initDate),
+                td(viewLink(farmstand.name)),
+                td(deleteLink(farmstand.name)),
+            ]);
+        }
+
+        function tr(children) {
+            const node = document.createElement("tr");
+            children.forEach(child => node.appendChild(child));
+            return node;
+        }
+
+        function td(content) {
+            const node = document.createElement("td");
+            if (content instanceof Element) {
+                node.appendChild(content)
+            } else {
+                node.appendChild(document.createTextNode(content));
+            }
+            return node;
+        }
+
+        function viewLink(farmstandName) {
+            const node = document.createElement("a");
+            node.setAttribute(
+                "href", `javascript:displayFarmstand("${farmstandName}")`
+            )
+            node.appendChild(document.createTextNode("view"));
+            return node;
+        }
+
+        function deleteLink(farmstandName) {
+            const node = document.createElement("a");
+            node.setAttribute(
+                "href", `javascript:deleteFarmstand("${farmstandName}")`
+            )
+            node.appendChild(document.createTextNode("delete"));
+            return node;
+        }
+    </script>
 </head>
-<body>
-<h1>Hello Ktor!</h1>
+<body onload="displayAllFarmstands()">
+<h1>Farmstand Manager</h1>
+<form action="javascript:displayAllFarmstands()">
+    <span>View all the farmstands</span>
+    <input type="submit" value="Go">
+</form>
+<!-- FIXME - perhaps show all running (i.e. not shutdown) farmstands -->
+<!--<form name="priorityForm" action="javascript:displayTasksWithPriority()">-->
+<!--    <span>View tasks with priority</span>-->
+<!--    <select name="priority">-->
+<!--        <option name="Low">Low</option>-->
+<!--        <option name="Medium">Medium</option>-->
+<!--        <option name="High">High</option>-->
+<!--        <option name="Vital">Vital</option>-->
+<!--    </select>-->
+<!--    <input type="submit" value="Go">-->
+<!--</form>-->
+
+<form name="addFarmstandForm" action="javascript:addNewFarmstand()">
+    <span>Create new farmstand</span>
+    <label for="newFarmstandName">name</label>
+    <input type="text" id="newFarmstandName" name="newFarmstandName" size="10">
+    <label for="newFarmstandInitDate">initialization date</label>
+    <input type="text" id="newFarmstandInitDate" name="newFarmstandInitDate" size="20">
+    <input type="submit" value="Go">
+</form>
+
+<hr>
+
+<div>
+    Current farmstand is <em id="currentFarmstandDisplay">None</em>
+</div>
+
+<hr>
+
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Init Date</th>
+        <th>Shutdown Date</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody id="farmstandTableBody">
+    </tbody>
+</table>
 </body>
 </html>
