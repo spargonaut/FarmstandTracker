@@ -1,10 +1,5 @@
-<!-- TODO: DONE - get all FS -->
-<!-- TODO: DONE - create FS -->
-<!-- TODO: DONE: delete FS -->
-<!-- TODO: shutdown FS -->
-<!-- TODO: DONE - get FS by name -->
-
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <title>A Simple SPA For Farmstands</title>
     <script type="application/javascript">
@@ -13,11 +8,21 @@
             fetchAllFarmstands().then(displayFarmstands)
         }
 
-        // function displayTasksWithPriority() {
-        //     clearFarmstandTable();
-        //     const priority = readTaskPriority();
-        //     fetchTasksWithPriority(priority).then(displayFarmstands)
-        // }
+        function shutdownFarmstandByName() {
+            const farmstandinfo = shutdownFarmstandFromForm();
+            sendPOST(`/farmstand/${farmstandinfo.name}`, {shutdownDate: farmstandinfo.shutdownDate}).then(displayAllFarmstands);
+        }
+
+        function shutdownFarmstandFromForm() {
+            return {
+                name: getShutdownFarmstandFormValue("farmstandName"),
+                shutdownDate: getShutdownFarmstandFormValue("farmstandShutdownDate"),
+            }
+        }
+
+        function getShutdownFarmstandFormValue(controlName) {
+            return document.shutdownForm[controlName].value;
+        }
 
         function displayFarmstand(name) {
             fetchFarmstandWithName(name).then(t =>
@@ -44,12 +49,12 @@
 
         function buildFarmstandFromForm() {
             return {
-                name: getFarmstandFormValue("newFarmstandName"),
-                initDate: getFarmstandFormValue("newFarmstandInitDate"),
+                name: getAddFarmstandFormValue("newFarmstandName"),
+                initDate: getAddFarmstandFormValue("newFarmstandInitDate"),
             }
         }
 
-        function getFarmstandFormValue(controlName) {
+        function getAddFarmstandFormValue(controlName) {
             return document.addFarmstandForm[controlName].value;
         }
 
@@ -123,6 +128,7 @@
             return tr([
                 td(farmstand.name),
                 td(farmstand.initDate),
+                td(farmstand.shutdownDate),
                 td(viewLink(farmstand.name)),
                 td(deleteLink(farmstand.name)),
             ]);
@@ -169,17 +175,18 @@
     <span>View all the farmstands</span>
     <input type="submit" value="Go">
 </form>
-<!-- FIXME - perhaps show all running (i.e. not shutdown) farmstands -->
-<!--<form name="priorityForm" action="javascript:displayTasksWithPriority()">-->
-<!--    <span>View tasks with priority</span>-->
-<!--    <select name="priority">-->
-<!--        <option name="Low">Low</option>-->
-<!--        <option name="Medium">Medium</option>-->
-<!--        <option name="High">High</option>-->
-<!--        <option name="Vital">Vital</option>-->
-<!--    </select>-->
-<!--    <input type="submit" value="Go">-->
-<!--</form>-->
+
+<form name="shutdownForm" action="javascript:shutdownFarmstandByName()">
+    <span>Shutdown a farmstand by </span>
+
+    <label for="farmstandName">name</label>
+    <input type="text" id="farmstandName" name="farmstandName" size="10">
+
+    <label for="farmstandShutdownDate">shutdown date</label>
+    <input type="text" id="farmstandShutdownDate" name="farmstandShutdownDate" size="20">
+
+    <input type="submit" value="Go">
+</form>
 
 <form name="addFarmstandForm" action="javascript:addNewFarmstand()">
     <span>Create new farmstand</span>
@@ -204,6 +211,7 @@
         <th>Name</th>
         <th>Init Date</th>
         <th>Shutdown Date</th>
+        <th></th>
         <th></th>
     </tr>
     </thead>
