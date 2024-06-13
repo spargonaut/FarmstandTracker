@@ -8,24 +8,24 @@ class FakeFarmstandRepository : FarmstandRepository {
         Farmstand("Leafy Greens", LocalDate(2022, 10, 1), LocalDate(2023, 4, 10) )
     )
 
-    override fun allFarmstands(): List<Farmstand> = farmstands
+    override suspend fun allFarmstands(): List<Farmstand> = farmstands
 
-    override fun farmstandByName(name: String) = farmstands.find {
+    override suspend fun farmstandByName(name: String) = farmstands.find {
         it.name.equals(name, ignoreCase = true)
     }
 
-    override fun addFarmstand(farmstand: Farmstand) {
+    override suspend fun addFarmstand(farmstand: Farmstand) {
         if (farmstandByName(farmstand.name) != null) {
             throw IllegalStateException("Cannot duplicate farmstand names!")
         }
         farmstands.add(farmstand)
     }
 
-    override fun removeFarmstand(name: String): Boolean {
+    override suspend fun removeFarmstand(name: String): Boolean {
         return farmstands.removeIf { it.name == name }
     }
 
-    override fun shutdownFarmstand(name: String, farmstandShutdown: FarmstandShutdown): Boolean {
+    override suspend fun shutdownFarmstand(name: String, farmstandShutdown: FarmstandShutdown): Boolean {
         val farmstand = farmstands.find { fs ->
             fs.name.equals(name, ignoreCase = true)
         }

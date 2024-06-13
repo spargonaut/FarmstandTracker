@@ -1,9 +1,9 @@
 package com.farmstandtracker.model
 
 interface FarmstandRepository {
-    fun allFarmstands(): List<Farmstand>
-    fun farmstandByName(name: String): Farmstand?
-    fun addFarmstand(farmstand: Farmstand)
-    fun removeFarmstand(name: String): Boolean
-    fun shutdownFarmstand(name: String, farmstandShutdown: FarmstandShutdown): Boolean
+    suspend fun allFarmstands(): List<Farmstand>
+    suspend fun farmstandByName(name: String): Farmstand?
+    suspend fun addFarmstand(farmstand: Farmstand)
+    suspend fun removeFarmstand(name: String): Boolean
+    suspend fun shutdownFarmstand(name: String, farmstandShutdown: FarmstandShutdown): Boolean
 }
