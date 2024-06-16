@@ -33,11 +33,13 @@ dependencies {
     implementation("io.ktor:ktor-server-status-pages-jvm:$ktor_version")
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
     implementation("com.h2database:h2:$h2_version")
     implementation("org.postgresql:postgresql:$postgres_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
+    implementation("org.jetbrains.exposed:exposed-java-time:0.51.1")
 
     testImplementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")

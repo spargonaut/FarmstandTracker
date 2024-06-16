@@ -1,7 +1,10 @@
 package com.farmstandtracker
 
+import com.farmstandtracker.model.FakeFarmstandRepository
 import com.farmstandtracker.model.Farmstand
 import com.farmstandtracker.model.FarmstandShutdown
+import com.farmstandtracker.plugins.configureRouting
+import com.farmstandtracker.plugins.configureSerialization
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -21,6 +24,12 @@ import kotlin.test.*
 class ApplicationTest {
     @Test
     fun `new farmstands can be added and retrieved`() = testApplication {
+        application {
+            val repository = FakeFarmstandRepository()
+            configureSerialization(repository)
+            configureRouting()
+        }
+
         val client = createClient {
             install(ContentNegotiation) {
                 json()
@@ -43,6 +52,12 @@ class ApplicationTest {
 
     @Test
     fun `farmstands can be deleted by name`() = testApplication {
+        application {
+            val repository = FakeFarmstandRepository()
+            configureSerialization(repository)
+            configureRouting()
+        }
+
         val client = createClient {
             install(ContentNegotiation) {
                 json()
@@ -78,6 +93,12 @@ class ApplicationTest {
 
     @Test
     fun `farmstands can be retrieved by name`() = testApplication {
+        application {
+            val repository = FakeFarmstandRepository()
+            configureSerialization(repository)
+            configureRouting()
+        }
+
         val client = createClient {
             install(ContentNegotiation) {
                 json()
@@ -95,6 +116,12 @@ class ApplicationTest {
 
     @Test
     fun `retrieving a farmstand by name with a bad name produces a NotFound response`() = testApplication {
+        application {
+            val repository = FakeFarmstandRepository()
+            configureSerialization(repository)
+            configureRouting()
+        }
+
         val client = createClient {
             install(ContentNegotiation) {
                 json()
@@ -109,6 +136,12 @@ class ApplicationTest {
 
     @Test
     fun `farmstand can be shutdown by name`() = testApplication {
+        application {
+            val repository = FakeFarmstandRepository()
+            configureSerialization(repository)
+            configureRouting()
+        }
+
         val client = createClient {
             install(ContentNegotiation) {
                 json()
@@ -132,6 +165,12 @@ class ApplicationTest {
 
     @Test
     fun `repeated attempts to shutdown an already shutdown farmstand should be ignored`() = testApplication {
+        application {
+            val repository = FakeFarmstandRepository()
+            configureSerialization(repository)
+            configureRouting()
+        }
+
         val client = createClient {
             install(ContentNegotiation) {
                 json()
