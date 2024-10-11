@@ -17,6 +17,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.*
 import kotlinx.datetime.LocalDate
 import kotlin.test.*
@@ -24,6 +25,10 @@ import kotlin.test.*
 class ApplicationTest {
     @Test
     fun `new farmstands can be added and retrieved`() = testApplication {
+        environment {
+            config = MapApplicationConfig()
+        }
+
         application {
             val repository = FakeFarmstandRepository()
             configureSerialization(repository)
@@ -52,6 +57,10 @@ class ApplicationTest {
 
     @Test
     fun `farmstands can be deleted by name`() = testApplication {
+        environment {
+            config = MapApplicationConfig()
+        }
+
         application {
             val repository = FakeFarmstandRepository()
             configureSerialization(repository)
@@ -93,6 +102,10 @@ class ApplicationTest {
 
     @Test
     fun `farmstands can be retrieved by name`() = testApplication {
+        environment {
+            config = MapApplicationConfig()
+        }
+
         application {
             val repository = FakeFarmstandRepository()
             configureSerialization(repository)
@@ -116,6 +129,10 @@ class ApplicationTest {
 
     @Test
     fun `retrieving a farmstand by name with a bad name produces a NotFound response`() = testApplication {
+        environment {
+            config = MapApplicationConfig()
+        }
+
         application {
             val repository = FakeFarmstandRepository()
             configureSerialization(repository)
@@ -136,6 +153,10 @@ class ApplicationTest {
 
     @Test
     fun `farmstand can be shutdown by name`() = testApplication {
+        environment {
+            config = MapApplicationConfig()
+        }
+
         application {
             val repository = FakeFarmstandRepository()
             configureSerialization(repository)
@@ -165,6 +186,10 @@ class ApplicationTest {
 
     @Test
     fun `repeated attempts to shutdown an already shutdown farmstand should be ignored`() = testApplication {
+        environment {
+            config = MapApplicationConfig()
+        }
+
         application {
             val repository = FakeFarmstandRepository()
             configureSerialization(repository)
