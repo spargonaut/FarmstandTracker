@@ -18,7 +18,7 @@ fun Application.configureSerialization(farmstandRepository: FarmstandRepository)
     }
     routing {
         route("/farmstand") {
-            get {
+            get("/all") {
                 val farmstands = farmstandRepository.allFarmstands()
                 call.respond(farmstands)
             }

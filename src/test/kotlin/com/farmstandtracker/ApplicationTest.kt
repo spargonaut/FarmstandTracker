@@ -24,7 +24,7 @@ import kotlin.test.*
 
 class ApplicationTest {
     @Test
-    fun `new farmstands can be added and retrieved`() = testApplication {
+    fun `active and inactive farmstands can be retrieved`() = testApplication {
         environment {
             config = MapApplicationConfig()
         }
@@ -41,18 +41,31 @@ class ApplicationTest {
             }
         }
 
-        val farmstand = createFarmstand()
+        val farmstandOne = createFarmstand(
+            name = "beans"
+        )
+        val farmstandTwo = createFarmstand(
+            name = "lettuce"
+        )
+        val farmstandThree = createFarmstand(
+            name = "mint",
+            shutdownDate = LocalDate(2024, 4, 5)
+        )
 
-        createFarmstandWithPost(client, farmstand)
+        createFarmstandWithPost(client, farmstandOne)
+        createFarmstandWithPost(client, farmstandTwo)
+        createFarmstandWithPost(client, farmstandThree)
 
-        val response2 = client.get("/farmstand")
+        val response2 = client.get("/farmstand/all")
         assertEquals(HttpStatusCode.OK, response2.status)
 
         val farmstandsNames = response2
             .body<List<Farmstand>>()
             .map { it.name }
 
-        assertContains(farmstandsNames, farmstand.name)
+        assertContains(farmstandsNames, farmstandOne.name)
+        assertContains(farmstandsNames, farmstandTwo.name)
+        assertContains(farmstandsNames, farmstandThree.name)
     }
 
     @Test
@@ -73,7 +86,7 @@ class ApplicationTest {
             }
         }
 
-        val initialResponse = client.get("/farmstand")
+        val initialResponse = client.get("/farmstand/all")
         assertEquals(HttpStatusCode.OK, initialResponse.status)
         val originalFarmstandsNames = initialResponse
             .body<List<Farmstand>>()
@@ -82,7 +95,7 @@ class ApplicationTest {
         val farmstand = createFarmstand()
         createFarmstandWithPost(client, farmstand)
 
-        val responseAfterAdding = client.get("/farmstand")
+        val responseAfterAdding = client.get("/farmstand/all")
         assertEquals(HttpStatusCode.OK, responseAfterAdding.status)
         val farmstandsNames = responseAfterAdding
             .body<List<Farmstand>>()
@@ -92,7 +105,7 @@ class ApplicationTest {
         val deleteResponse =  client.delete("/farmstand/swimming")
         assertEquals(HttpStatusCode.NoContent, deleteResponse.status)
 
-        val responseAfterDeleting = client.get("/farmstand")
+        val responseAfterDeleting = client.get("/farmstand/all")
         assertEquals(HttpStatusCode.OK, responseAfterDeleting.status)
         val farmstandNamesAfterDeleting = responseAfterDeleting
             .body<List<Farmstand>>()
@@ -228,8 +241,9 @@ class ApplicationTest {
 
     private fun createFarmstand(
         name: String = "swimming",
-        initDate: LocalDate = LocalDate(2024, 4, 1)
-    ) = Farmstand(name, initDate)
+        initDate: LocalDate = LocalDate(2024, 4, 1),
+        shutdownDate: LocalDate? = null
+    ) = Farmstand(name, initDate, shutdownDate)
 
     private suspend fun createFarmstandWithPost(client: HttpClient, farmstand: Farmstand) {
         val response1 = client.post("/farmstand") {
