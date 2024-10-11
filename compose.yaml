@@ -9,5 +9,5 @@ services:
       - ./zDB/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
     environment:
       - POSTGRES_PASSWORD=mysecretpassword
-      - POSTGRES_USER=postgres
+      - POSTGRES_USER=farmer
       - POSTGRES_DB=farmstand_tracker
