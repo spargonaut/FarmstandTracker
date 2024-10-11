@@ -1,5 +1,5 @@
 services:
-  database:
+  fs_database:
     image: postgres
     restart: always
     ports:
@@ -11,3 +11,14 @@ services:
       - POSTGRES_PASSWORD=mysecretpassword
       - POSTGRES_USER=farmer
       - POSTGRES_DB=farmstand_tracker
+
+  farmstand:
+    build:
+      context: .
+      dockerfile: ./src/main/docker/Dockerfile
+    ports:
+      - "8080:8080"
+    links:
+      - fs_database
+    environment:
+      FS_DB_HOST: "fs_database"
