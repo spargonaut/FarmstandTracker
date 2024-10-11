@@ -8,8 +8,12 @@ GET https://examples.http-client.intellij.net/get
 GET http://0.0.0.0:8080/farmstand
 
 
-### GET by name
+### GET by name - mint
 GET http://0.0.0.0:8080/farmstand/byName/mint
+
+
+### GET by name - beans
+GET http://0.0.0.0:8080/farmstand/byName/beans
 
 
 ### POST - Create a farmstand
