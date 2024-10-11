@@ -69,6 +69,50 @@ class ApplicationTest {
     }
 
     @Test
+    fun `active farmstands can be retrieved`() = testApplication {
+        environment {
+            config = MapApplicationConfig()
+        }
+
+        application {
+            val repository = FakeFarmstandRepository()
+            configureSerialization(repository)
+            configureRouting()
+        }
+
+        val client = createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+        }
+
+        val farmstandOne = createFarmstand(
+            name = "beans"
+        )
+        val farmstandTwo = createFarmstand(
+            name = "lettuce"
+        )
+        val farmstandThree = createFarmstand(
+            name = "mint",
+            shutdownDate = LocalDate(2024, 4, 5)
+        )
+
+        createFarmstandWithPost(client, farmstandOne)
+        createFarmstandWithPost(client, farmstandTwo)
+        createFarmstandWithPost(client, farmstandThree)
+
+        val response2 = client.get("/farmstand")
+        assertEquals(HttpStatusCode.OK, response2.status)
+
+        val farmstandsNames = response2
+            .body<List<Farmstand>>()
+
+        farmstandsNames.forEach {
+            assertNull(it.shutdownDate)
+        }
+    }
+
+    @Test
     fun `farmstands can be deleted by name`() = testApplication {
         environment {
             config = MapApplicationConfig()

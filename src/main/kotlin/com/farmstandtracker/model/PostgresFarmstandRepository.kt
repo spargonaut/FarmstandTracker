@@ -9,6 +9,12 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 
 class PostgresFarmstandRepository : FarmstandRepository {
+    override suspend fun activeFarmstands(): List<Farmstand> = suspendTransaction {
+        FarmstandDAO
+            .find { (FarmstandTable.shutdownDate eq null) }
+            .map(::daoToModel)
+    }
+
     override suspend fun allFarmstands(): List<Farmstand> = suspendTransaction {
         FarmstandDAO.all().map(::daoToModel)
     }

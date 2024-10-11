@@ -8,6 +8,10 @@ class FakeFarmstandRepository : FarmstandRepository {
         Farmstand("Leafy Greens", LocalDate(2022, 10, 1), LocalDate(2023, 4, 10) )
     )
 
+    override suspend fun activeFarmstands(): List<Farmstand> = farmstands.filter {
+        it.shutdownDate == null
+    }
+
     override suspend fun allFarmstands(): List<Farmstand> = farmstands
 
     override suspend fun farmstandByName(name: String) = farmstands.find {

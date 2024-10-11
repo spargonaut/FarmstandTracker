@@ -23,6 +23,11 @@ fun Application.configureSerialization(farmstandRepository: FarmstandRepository)
                 call.respond(farmstands)
             }
 
+            get {
+                val farmstands = farmstandRepository.activeFarmstands()
+                call.respond(farmstands)
+            }
+
             post {
                 try {
                     val farmstand = call.receive<Farmstand>()
