@@ -121,7 +121,7 @@ class ApplicationTest {
         val farmstand = createFarmstand()
         createFarmstandWithPost(client, farmstand)
 
-        val urlString = "farmstand/byName/${farmstand.name}"
+        val urlString = "farmstand/${farmstand.name}"
         val retrievedFarmstand = client.get(urlString).body<Farmstand>()
 
         assertEquals(retrievedFarmstand, farmstand)
@@ -145,7 +145,7 @@ class ApplicationTest {
             }
         }
 
-        val urlString = "/farmstand/byName/bad-name"
+        val urlString = "/farmstand/bad-name"
         val responseStatus = client.get(urlString).status
         assertEquals(HttpStatusCode.NotFound, responseStatus)
 

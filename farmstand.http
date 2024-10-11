@@ -9,11 +9,11 @@ GET http://0.0.0.0:8080/farmstand
 
 
 ### GET by name - mint
-GET http://0.0.0.0:8080/farmstand/byName/mint
+GET http://0.0.0.0:8080/farmstand/mint
 
 
 ### GET by name - beans
-GET http://0.0.0.0:8080/farmstand/byName/beans
+GET http://0.0.0.0:8080/farmstand/beans
 
 
 ### POST - Create a farmstand

@@ -23,20 +23,6 @@ fun Application.configureSerialization(farmstandRepository: FarmstandRepository)
                 call.respond(farmstands)
             }
 
-            get("/byName/{farmstandName}") {
-                val name = call.parameters["farmstandName"]
-                if (name == null) {
-                    call.respond(HttpStatusCode.BadRequest)
-                    return@get
-                }
-                val farmstand = farmstandRepository.farmstandByName(name)
-                if (farmstand == null) {
-                    call.respond(HttpStatusCode.NotFound)
-                    return@get
-                }
-                call.respond(farmstand)
-            }
-
             post {
                 try {
                     val farmstand = call.receive<Farmstand>()
@@ -50,6 +36,19 @@ fun Application.configureSerialization(farmstandRepository: FarmstandRepository)
             }
 
             route("/{farmstandName}") {
+                get {
+                    val name = call.parameters["farmstandName"]
+                    if (name == null) {
+                        call.respond(HttpStatusCode.BadRequest)
+                        return@get
+                    }
+                    val farmstand = farmstandRepository.farmstandByName(name)
+                    if (farmstand == null) {
+                        call.respond(HttpStatusCode.NotFound)
+                        return@get
+                    }
+                    call.respond(farmstand)
+                }
                 delete {
                     val name = call.parameters["farmstandName"]
                     if (name == null) {
