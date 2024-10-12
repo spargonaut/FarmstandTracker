@@ -1,0 +1,7 @@
+*.md
+build
+.idea
+.gradle
+.kotlin
+zSupport
+*.http
