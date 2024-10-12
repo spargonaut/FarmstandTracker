@@ -12,13 +12,13 @@ services:
       - POSTGRES_USER=farmer
       - POSTGRES_DB=farmstand_tracker
 
-  farmstand:
-    build:
-      context: .
-      dockerfile: ./src/main/docker/Dockerfile
-    ports:
-      - "8080:8080"
-    links:
-      - fs_database
-    environment:
-      FS_DB_HOST: "fs_database"
+#  farmstand:
+#    build:
+#      context: .
+#      dockerfile: ./src/main/docker/Dockerfile
+#    ports:
+#      - "8080:8080"
+#    links:
+#      - fs_database
+#    environment:
+#      FS_DB_HOST: "fs_database"
