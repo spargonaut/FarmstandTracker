@@ -23,6 +23,12 @@ Content-Type: application/json
 { "name" : "beans", "initDate": "2012-04-23" }
 
 
+### POST - Shutdown a farmstand - beans
+POST http://0.0.0.0:8080/farmstand/beans
+Content-Type: application/json
+
+{ "shutdownDate": "2012-04-25" }
+
 ### POST - Shutdown a farmstand - this should be successful the first time it is run after starting the app
 POST http://0.0.0.0:8080/farmstand/Strawberries
 Content-Type: application/json
@@ -36,4 +42,4 @@ Content-Type: application/json
 { "shutdownDate": "2012-04-25" }
 
 ### DELETE
-DELETE http://0.0.0.0:8080/farmstand/mint
+DELETE http://0.0.0.0:8080/farmstand/beans

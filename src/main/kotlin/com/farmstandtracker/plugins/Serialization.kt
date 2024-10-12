@@ -79,8 +79,6 @@ fun Application.configureSerialization(farmstandRepository: FarmstandRepository)
                             call.respond(HttpStatusCode.NotFound)
                         }
                     } catch (ex: IllegalStateException) {
-                        println(ex.message)
-                        println(ex.stackTrace)
                         call.respond(HttpStatusCode.BadRequest)
                     } catch (ex: JsonConvertException) {
                         call.respond(HttpStatusCode.BadRequest)

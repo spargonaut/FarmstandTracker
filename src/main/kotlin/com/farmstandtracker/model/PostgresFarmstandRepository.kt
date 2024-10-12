@@ -7,6 +7,8 @@ import com.farmstandtracker.db.suspendTransaction
 import kotlinx.datetime.toJavaLocalDate
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 
 class PostgresFarmstandRepository : FarmstandRepository {
     override suspend fun activeFarmstands(): List<Farmstand> = suspendTransaction {
@@ -42,7 +44,11 @@ class PostgresFarmstandRepository : FarmstandRepository {
     }
 
     override suspend fun shutdownFarmstand(name: String, farmstandShutdown: FarmstandShutdown): Boolean {
-        // TODO ("not implemented yet")
-        return false;
+        return transaction {
+            val updatedCount = FarmstandTable.update({ FarmstandTable.name eq name }) {
+                it[shutdownDate] = farmstandShutdown.shutdownDate.toJavaLocalDate()
+            }
+            updatedCount == 1
+        }
     }
 }
