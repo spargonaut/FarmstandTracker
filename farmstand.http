@@ -16,11 +16,18 @@ GET http://0.0.0.0:8080/farmstand/mint
 GET http://0.0.0.0:8080/farmstand/beans
 
 
-### POST - Create a farmstand
+### POST - Create a farmstand - beans
 POST http://0.0.0.0:8080/farmstand
 Content-Type: application/json
 
 { "name" : "beans", "initDate": "2012-04-23" }
+
+
+### POST - Create a farmstand - mint
+POST http://0.0.0.0:8080/farmstand
+Content-Type: application/json
+
+{ "name" : "mint", "initDate": "2012-04-11" }
 
 
 ### POST - Shutdown a farmstand - beans
