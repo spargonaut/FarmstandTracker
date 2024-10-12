@@ -12,6 +12,10 @@ class FakeFarmstandRepository : FarmstandRepository {
         it.shutdownDate == null
     }
 
+    override suspend fun inactiveFarmstands(): List<Farmstand> = farmstands.filter {
+        it.shutdownDate != null
+    }
+
     override suspend fun allFarmstands(): List<Farmstand> = farmstands
 
     override suspend fun farmstandByName(name: String) = farmstands.find {

@@ -17,6 +17,12 @@ class PostgresFarmstandRepository : FarmstandRepository {
             .map(::daoToModel)
     }
 
+    override suspend fun inactiveFarmstands(): List<Farmstand> = suspendTransaction {
+        FarmstandDAO
+            .find { (FarmstandTable.shutdownDate neq null) }
+            .map(::daoToModel)
+    }
+
     override suspend fun allFarmstands(): List<Farmstand> = suspendTransaction {
         FarmstandDAO.all().map(::daoToModel)
     }

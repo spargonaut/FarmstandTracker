@@ -2,11 +2,14 @@
 GET https://examples.http-client.intellij.net/get
     ?generated-in=IntelliJ IDEA
 
-###
-
-### GET all
+### GET active farmstands
 GET http://0.0.0.0:8080/farmstand
 
+### GET all farmstands
+GET http://0.0.0.0:8080/farmstand/all
+
+### GET inactive farmstands
+GET http://0.0.0.0:8080/farmstand/shutdown
 
 ### GET by name - mint
 GET http://0.0.0.0:8080/farmstand/mint

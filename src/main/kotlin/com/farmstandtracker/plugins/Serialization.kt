@@ -23,6 +23,11 @@ fun Application.configureSerialization(farmstandRepository: FarmstandRepository)
                 call.respond(farmstands)
             }
 
+            get("/shutdown") {
+                val farmstands = farmstandRepository.inactiveFarmstands()
+                call.respond(farmstands)
+            }
+
             get {
                 val farmstands = farmstandRepository.activeFarmstands()
                 call.respond(farmstands)
