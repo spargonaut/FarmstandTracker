@@ -1,0 +1,17 @@
+name: Farmstand Info Service
+run-name: Main Build
+
+on: [push]
+
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get Short SHA
+        run: echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
+
+      - name: Build the Docker image
+        run: docker build . --file ./src/main/docker/Dockerfile --tag "farmstand-info-service:${SHORT_SHA}"
