@@ -62,7 +62,7 @@ class PostgresFarmstandRepositoryTest {
     }
 
     @Test
-    fun `test inserting and retrieving a farmstand`() {
+    fun `should insert and retrieve a farmstand by name`() {
         val repository = PostgresFarmstandRepository()
 
         val farmstandName = "foobar"
