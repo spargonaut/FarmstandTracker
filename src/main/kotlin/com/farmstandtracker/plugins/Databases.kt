@@ -1,7 +1,7 @@
 package com.farmstandtracker.plugins
 
-import io.ktor.server.application.*
-import org.jetbrains.exposed.sql.*
+import io.ktor.server.application.Application
+import org.jetbrains.exposed.sql.Database
 
 fun Application.configureDatabases() {
     val dbHost = System.getenv("FS_DB_HOST") ?: "localhost"
