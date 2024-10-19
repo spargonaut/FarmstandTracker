@@ -46,4 +46,12 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlin_version")
     testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
+    testImplementation(kotlin("test"))
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.2")
+    testImplementation("org.testcontainers:testcontainers:1.20.2")
+    testImplementation("org.testcontainers:postgresql:1.20.2")
+}
+
+tasks.named<Test>("test") {
+    useJUnitPlatform()
 }
