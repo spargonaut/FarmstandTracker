@@ -78,4 +78,26 @@ class PostgresFarmstandRepositoryTest {
 
         assertEquals(farmstand, fetchedFarmstand)
     }
+
+    @Test
+    fun `should shutdown a farmstand`() {
+        val repository = PostgresFarmstandRepository()
+
+        val farmstandName = "foobar"
+        val farmstand = Farmstand(
+            name = farmstandName,
+            initDate = LocalDate(2024, 2, 14),
+        )
+
+        val shutdownDate = LocalDate(2024, 2, 16)
+        val farmstandShutdown = FarmstandShutdown(shutdownDate)
+
+        val fetchedFarmstand = runBlocking {
+            repository.addFarmstand(farmstand)
+            repository.shutdownFarmstand(farmstandName, farmstandShutdown)
+            repository.farmstandByName(farmstandName)
+        }
+
+        assertEquals(shutdownDate, fetchedFarmstand?.shutdownDate)
+    }
 }
