@@ -224,4 +224,65 @@ class PostgresFarmstandRepositoryTest {
         assertContains(inactiveFarmstandNames, inactiveFarmstandOneName)
         assertContains(inactiveFarmstandNames, inactiveFarmstandTwoName)
     }
+
+    @Test
+    fun `should fetch all farmstands`() {
+        val repository = PostgresFarmstandRepository()
+
+        val activeFarmstandOneName = RandomStringUtils.randomAlphanumeric(5)
+        val activeFarmstandOne = Farmstand(
+            name = activeFarmstandOneName,
+            initDate = LocalDate(2024, 2, 14),
+        )
+
+        val activeFarmstandTwoName = RandomStringUtils.randomAlphanumeric(5)
+        val activeFarmstandTwo = Farmstand(
+            name = activeFarmstandTwoName,
+            initDate = LocalDate(2024, 2, 15),
+        )
+
+        val inactiveFarmstandOneName = RandomStringUtils.randomAlphanumeric(5)
+        val inactiveFarmstandOne = Farmstand(
+            name = inactiveFarmstandOneName,
+            initDate = LocalDate(2024, 2, 15),
+        )
+        val shutdownDateOne = LocalDate(2024, 2, 16)
+        val inactiveFarmstandOneShutdown = FarmstandShutdown(shutdownDateOne)
+
+        val inactiveFarmstandTwoName = RandomStringUtils.randomAlphanumeric(5)
+        val inactiveFarmstandTwo = Farmstand(
+            name = inactiveFarmstandTwoName,
+            initDate = LocalDate(2024, 2, 15),
+        )
+        val shutdownDateTwo = LocalDate(2024, 2, 17)
+        val inactiveFarmstandTwoShutdown = FarmstandShutdown(shutdownDateTwo)
+
+        val allFarmstands = runBlocking {
+            repository.addFarmstand(activeFarmstandOne)
+            repository.addFarmstand(activeFarmstandTwo)
+
+            repository.addFarmstand(inactiveFarmstandOne)
+            repository.shutdownFarmstand(
+                inactiveFarmstandOneName,
+                inactiveFarmstandOneShutdown
+            )
+
+            repository.addFarmstand(inactiveFarmstandTwo)
+            repository.shutdownFarmstand(
+                inactiveFarmstandTwoName,
+                inactiveFarmstandTwoShutdown
+            )
+
+            repository.allFarmstands()
+        }
+
+        assertEquals(4, allFarmstands.size)
+        val allFarmstandNames = allFarmstands.map { it.name }
+
+        assertContains(allFarmstandNames, inactiveFarmstandOneName)
+        assertContains(allFarmstandNames, inactiveFarmstandTwoName)
+
+        assertContains(allFarmstandNames, activeFarmstandOneName)
+        assertContains(allFarmstandNames, activeFarmstandTwoName)
+    }
 }
