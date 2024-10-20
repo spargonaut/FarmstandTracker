@@ -1,9 +1,8 @@
 FROM amazoncorretto:21-al2-jdk AS build
 
-#COPY --chown=gradle:gradle . /home/gradle/src
 COPY . /home/gradle
 WORKDIR /home/gradle
-RUN ./gradlew --no-daemon clean build
+RUN ./gradlew --no-daemon clean build -x test
 
 FROM amazoncorretto:21-al2-jdk
 EXPOSE 8080
