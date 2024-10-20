@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils
 import kotlin.test.assertContains
 
 
@@ -79,7 +80,7 @@ class PostgresFarmstandRepositoryTest {
     fun `should insert and retrieve a farmstand by name`() {
         val repository = PostgresFarmstandRepository()
 
-        val farmstandName = "foobar"
+        val farmstandName = RandomStringUtils.randomAlphanumeric(5)
         val farmstand = Farmstand(
             name = farmstandName,
             initDate = LocalDate(2024, 2, 14),
@@ -97,7 +98,7 @@ class PostgresFarmstandRepositoryTest {
     fun `should shutdown a farmstand`() {
         val repository = PostgresFarmstandRepository()
 
-        val farmstandName = "foobar"
+        val farmstandName = RandomStringUtils.randomAlphanumeric(5)
         val farmstand = Farmstand(
             name = farmstandName,
             initDate = LocalDate(2024, 2, 14),
@@ -119,25 +120,25 @@ class PostgresFarmstandRepositoryTest {
     fun `should fetch only active farmstands`() {
         val repository = PostgresFarmstandRepository()
 
-        val activeFarmstandOneName = "foobar"
+        val activeFarmstandOneName = RandomStringUtils.randomAlphanumeric(5)
         val activeFarmstandOne = Farmstand(
             name = activeFarmstandOneName,
             initDate = LocalDate(2024, 2, 14),
         )
 
-        val activeFarmstandTwoName = "dingdong"
+        val activeFarmstandTwoName = RandomStringUtils.randomAlphanumeric(5)
         val activeFarmstandTwo = Farmstand(
             name = activeFarmstandTwoName,
             initDate = LocalDate(2024, 2, 15),
         )
 
-        val activeFarmstandThreeName = "bizbuz"
+        val activeFarmstandThreeName = RandomStringUtils.randomAlphanumeric(5)
         val activeFarmstandThree = Farmstand(
             name = activeFarmstandThreeName,
             initDate = LocalDate(2024, 2, 15),
         )
 
-        val inactiveFarmstandOneName = "blipblop"
+        val inactiveFarmstandOneName = RandomStringUtils.randomAlphanumeric(5)
         val inactiveFarmstandOne = Farmstand(
             name = inactiveFarmstandOneName,
             initDate = LocalDate(2024, 2, 15),
@@ -171,19 +172,19 @@ class PostgresFarmstandRepositoryTest {
     fun `should fetch only inactive farmstands`() {
         val repository = PostgresFarmstandRepository()
 
-        val activeFarmstandOneName = "foobar"
+        val activeFarmstandOneName = RandomStringUtils.randomAlphanumeric(5)
         val activeFarmstandOne = Farmstand(
             name = activeFarmstandOneName,
             initDate = LocalDate(2024, 2, 14),
         )
 
-        val activeFarmstandTwoName = "bizbuz"
+        val activeFarmstandTwoName = RandomStringUtils.randomAlphanumeric(5)
         val activeFarmstandTwo = Farmstand(
             name = activeFarmstandTwoName,
             initDate = LocalDate(2024, 2, 15),
         )
 
-        val inactiveFarmstandOneName = "blipblop"
+        val inactiveFarmstandOneName = RandomStringUtils.randomAlphanumeric(5)
         val inactiveFarmstandOne = Farmstand(
             name = inactiveFarmstandOneName,
             initDate = LocalDate(2024, 2, 15),
@@ -191,7 +192,7 @@ class PostgresFarmstandRepositoryTest {
         val shutdownDateOne = LocalDate(2024, 2, 16)
         val inactiveFarmstandOneShutdown = FarmstandShutdown(shutdownDateOne)
 
-        val inactiveFarmstandTwoName = "dingdong"
+        val inactiveFarmstandTwoName = RandomStringUtils.randomAlphanumeric(5)
         val inactiveFarmstandTwo = Farmstand(
             name = inactiveFarmstandTwoName,
             initDate = LocalDate(2024, 2, 15),
