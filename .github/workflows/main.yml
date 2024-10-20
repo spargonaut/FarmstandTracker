@@ -4,7 +4,8 @@ run-name: Main Build
 on: [push]
 
 jobs:
-  Explore-GitHub-Actions:
+  Build-and-Package:
+    name: Build and Package the Farmstand Service
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
