@@ -13,5 +13,8 @@ jobs:
       - name: Get Short SHA
         run: echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
 
+      - name: Run the tests
+        run: ./gradlew clean build
+
       - name: Build the Docker image
         run: docker build . --file ./src/main/docker/Dockerfile --tag "farmstand-info-service:${SHORT_SHA}"
