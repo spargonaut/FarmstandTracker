@@ -6,6 +6,7 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -59,6 +60,18 @@ class PostgresFarmstandRepositoryTest {
         fun teardown() {
             TransactionManager.closeAndUnregister(databaseConnection)
             postgresContainer.stop()
+        }
+
+    }
+
+    @AfterEach
+    fun cleanup() {
+        transaction(databaseConnection) {
+            exec(
+                """
+                    TRUNCATE TABLE farmstand
+                """
+            )
         }
     }
 
