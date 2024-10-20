@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.testcontainers.containers.PostgreSQLContainer
+import kotlin.test.assertContains
 
 
 class PostgresFarmstandRepositoryTest {
@@ -99,5 +100,57 @@ class PostgresFarmstandRepositoryTest {
         }
 
         assertEquals(shutdownDate, fetchedFarmstand?.shutdownDate)
+    }
+
+    @Test
+    fun `should fetch only active farmstands`() {
+        val repository = PostgresFarmstandRepository()
+
+        val activeFarmstandOneName = "foobar"
+        val activeFarmstandOne = Farmstand(
+            name = activeFarmstandOneName,
+            initDate = LocalDate(2024, 2, 14),
+        )
+
+        val activeFarmstandTwoName = "dingdong"
+        val activeFarmstandTwo = Farmstand(
+            name = activeFarmstandTwoName,
+            initDate = LocalDate(2024, 2, 15),
+        )
+
+        val activeFarmstandThreeName = "bizbuz"
+        val activeFarmstandThree = Farmstand(
+            name = activeFarmstandThreeName,
+            initDate = LocalDate(2024, 2, 15),
+        )
+
+        val inactiveFarmstandOneName = "blipblop"
+        val inactiveFarmstandOne = Farmstand(
+            name = inactiveFarmstandOneName,
+            initDate = LocalDate(2024, 2, 15),
+        )
+
+        val shutdownDate = LocalDate(2024, 2, 16)
+        val inactiveFarmstandOneShutdown = FarmstandShutdown(shutdownDate)
+
+        val activeFarmstands = runBlocking {
+            repository.addFarmstand(activeFarmstandOne)
+            repository.addFarmstand(activeFarmstandTwo)
+            repository.addFarmstand(activeFarmstandThree)
+            repository.addFarmstand(inactiveFarmstandOne)
+
+            repository.shutdownFarmstand(
+                inactiveFarmstandOneName,
+                inactiveFarmstandOneShutdown
+            )
+
+            repository.activeFarmstands()
+        }
+
+        assertEquals(3, activeFarmstands.size)
+        val activeFarmstandNames = activeFarmstands.map { it.name }
+        assertContains(activeFarmstandNames, activeFarmstandOneName)
+        assertContains(activeFarmstandNames, activeFarmstandTwoName)
+        assertContains(activeFarmstandNames, activeFarmstandThreeName)
     }
 }
