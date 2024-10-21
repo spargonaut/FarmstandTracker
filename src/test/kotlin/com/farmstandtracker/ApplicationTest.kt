@@ -20,6 +20,7 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.*
 import kotlinx.datetime.LocalDate
+import kotlin.random.Random
 import kotlin.test.*
 
 class ApplicationTest {
@@ -325,10 +326,11 @@ class ApplicationTest {
     }
 
     private fun createFarmstand(
+        id: Int = Random.nextInt(),
         name: String = "swimming",
         initDate: LocalDate = LocalDate(2024, 4, 1),
         shutdownDate: LocalDate? = null
-    ) = Farmstand(name, initDate, shutdownDate)
+    ) = Farmstand(id, name, initDate, shutdownDate)
 
     private suspend fun createFarmstandWithPost(client: HttpClient, farmstand: Farmstand) {
         val response1 = client.post("/farmstand") {

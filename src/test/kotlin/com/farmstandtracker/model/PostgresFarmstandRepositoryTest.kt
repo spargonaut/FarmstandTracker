@@ -81,17 +81,18 @@ class PostgresFarmstandRepositoryTest {
         val repository = PostgresFarmstandRepository()
 
         val farmstandName = RandomStringUtils.randomAlphanumeric(5)
-        val farmstand = Farmstand(
+        val newFarmstand = NewFarmstand(
             name = farmstandName,
             initDate = LocalDate(2024, 2, 14),
         )
 
         val fetchedFarmstand = runBlocking {
-            repository.addFarmstand(farmstand)
+            repository.addFarmstand(newFarmstand)
             repository.farmstandByName(farmstandName)
         }
 
-        assertEquals(farmstand, fetchedFarmstand)
+        assertEquals(newFarmstand.name, fetchedFarmstand?.name)
+        assertEquals(newFarmstand.initDate, fetchedFarmstand?.initDate)
     }
 
     @Test
@@ -99,7 +100,7 @@ class PostgresFarmstandRepositoryTest {
         val repository = PostgresFarmstandRepository()
 
         val farmstandName = RandomStringUtils.randomAlphanumeric(5)
-        val farmstand = Farmstand(
+        val newFarmstand = NewFarmstand(
             name = farmstandName,
             initDate = LocalDate(2024, 2, 14),
         )
@@ -108,7 +109,7 @@ class PostgresFarmstandRepositoryTest {
         val farmstandShutdown = FarmstandShutdown(shutdownDate)
 
         val fetchedFarmstand = runBlocking {
-            repository.addFarmstand(farmstand)
+            repository.addFarmstand(newFarmstand)
             repository.shutdownFarmstand(farmstandName, farmstandShutdown)
             repository.farmstandByName(farmstandName)
         }
@@ -121,25 +122,25 @@ class PostgresFarmstandRepositoryTest {
         val repository = PostgresFarmstandRepository()
 
         val activeFarmstandOneName = RandomStringUtils.randomAlphanumeric(5)
-        val activeFarmstandOne = Farmstand(
+        val activeFarmstandOne = NewFarmstand(
             name = activeFarmstandOneName,
             initDate = LocalDate(2024, 2, 14),
         )
 
         val activeFarmstandTwoName = RandomStringUtils.randomAlphanumeric(5)
-        val activeFarmstandTwo = Farmstand(
+        val activeFarmstandTwo = NewFarmstand(
             name = activeFarmstandTwoName,
             initDate = LocalDate(2024, 2, 15),
         )
 
         val activeFarmstandThreeName = RandomStringUtils.randomAlphanumeric(5)
-        val activeFarmstandThree = Farmstand(
+        val activeFarmstandThree = NewFarmstand(
             name = activeFarmstandThreeName,
             initDate = LocalDate(2024, 2, 15),
         )
 
         val inactiveFarmstandOneName = RandomStringUtils.randomAlphanumeric(5)
-        val inactiveFarmstandOne = Farmstand(
+        val inactiveFarmstandOne = NewFarmstand(
             name = inactiveFarmstandOneName,
             initDate = LocalDate(2024, 2, 15),
         )
@@ -173,19 +174,19 @@ class PostgresFarmstandRepositoryTest {
         val repository = PostgresFarmstandRepository()
 
         val activeFarmstandOneName = RandomStringUtils.randomAlphanumeric(5)
-        val activeFarmstandOne = Farmstand(
+        val activeFarmstandOne = NewFarmstand(
             name = activeFarmstandOneName,
             initDate = LocalDate(2024, 2, 14),
         )
 
         val activeFarmstandTwoName = RandomStringUtils.randomAlphanumeric(5)
-        val activeFarmstandTwo = Farmstand(
+        val activeFarmstandTwo = NewFarmstand(
             name = activeFarmstandTwoName,
             initDate = LocalDate(2024, 2, 15),
         )
 
         val inactiveFarmstandOneName = RandomStringUtils.randomAlphanumeric(5)
-        val inactiveFarmstandOne = Farmstand(
+        val inactiveFarmstandOne = NewFarmstand(
             name = inactiveFarmstandOneName,
             initDate = LocalDate(2024, 2, 15),
         )
@@ -193,7 +194,7 @@ class PostgresFarmstandRepositoryTest {
         val inactiveFarmstandOneShutdown = FarmstandShutdown(shutdownDateOne)
 
         val inactiveFarmstandTwoName = RandomStringUtils.randomAlphanumeric(5)
-        val inactiveFarmstandTwo = Farmstand(
+        val inactiveFarmstandTwo = NewFarmstand(
             name = inactiveFarmstandTwoName,
             initDate = LocalDate(2024, 2, 15),
         )
@@ -230,19 +231,19 @@ class PostgresFarmstandRepositoryTest {
         val repository = PostgresFarmstandRepository()
 
         val activeFarmstandOneName = RandomStringUtils.randomAlphanumeric(5)
-        val activeFarmstandOne = Farmstand(
+        val activeFarmstandOne = NewFarmstand(
             name = activeFarmstandOneName,
             initDate = LocalDate(2024, 2, 14),
         )
 
         val activeFarmstandTwoName = RandomStringUtils.randomAlphanumeric(5)
-        val activeFarmstandTwo = Farmstand(
+        val activeFarmstandTwo = NewFarmstand(
             name = activeFarmstandTwoName,
             initDate = LocalDate(2024, 2, 15),
         )
 
         val inactiveFarmstandOneName = RandomStringUtils.randomAlphanumeric(5)
-        val inactiveFarmstandOne = Farmstand(
+        val inactiveFarmstandOne = NewFarmstand(
             name = inactiveFarmstandOneName,
             initDate = LocalDate(2024, 2, 15),
         )
@@ -250,7 +251,7 @@ class PostgresFarmstandRepositoryTest {
         val inactiveFarmstandOneShutdown = FarmstandShutdown(shutdownDateOne)
 
         val inactiveFarmstandTwoName = RandomStringUtils.randomAlphanumeric(5)
-        val inactiveFarmstandTwo = Farmstand(
+        val inactiveFarmstandTwo = NewFarmstand(
             name = inactiveFarmstandTwoName,
             initDate = LocalDate(2024, 2, 15),
         )

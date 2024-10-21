@@ -31,6 +31,7 @@ suspend fun <T> suspendTransaction(block: Transaction.() -> T): T =
 
 
 fun daoToModel(dao: FarmstandDAO) = Farmstand(
+    id = dao.id.value,
     name = dao.name,
     initDate = LocalDate(dao.initDate.year, dao.initDate.month, dao.initDate.dayOfMonth),
     shutdownDate = dao.shutdownDate?.toKotlinLocalDate()

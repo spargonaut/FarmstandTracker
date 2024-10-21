@@ -5,7 +5,7 @@ interface FarmstandRepository {
     suspend fun inactiveFarmstands(): List<Farmstand>
     suspend fun allFarmstands(): List<Farmstand>
     suspend fun farmstandByName(name: String): Farmstand?
-    suspend fun addFarmstand(farmstand: Farmstand)
+    suspend fun addFarmstand(newFarmstand: NewFarmstand)
     suspend fun removeFarmstand(name: String): Boolean
     suspend fun shutdownFarmstand(name: String, farmstandShutdown: FarmstandShutdown): Boolean
 }

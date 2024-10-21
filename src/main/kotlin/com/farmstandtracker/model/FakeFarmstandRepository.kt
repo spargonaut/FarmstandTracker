@@ -1,11 +1,12 @@
 package com.farmstandtracker.model
 
 import kotlinx.datetime.LocalDate
+import kotlin.random.Random
 
 class FakeFarmstandRepository : FarmstandRepository {
     private val farmstands = mutableListOf(
-        Farmstand("Strawberries", LocalDate(2024, 2, 14)),
-        Farmstand("Leafy Greens", LocalDate(2022, 10, 1), LocalDate(2023, 4, 10) )
+        Farmstand(1, "Strawberries", LocalDate(2024, 2, 14)),
+        Farmstand(2, "Leafy Greens", LocalDate(2022, 10, 1), LocalDate(2023, 4, 10) )
     )
 
     override suspend fun activeFarmstands(): List<Farmstand> = farmstands.filter {
@@ -22,11 +23,17 @@ class FakeFarmstandRepository : FarmstandRepository {
         it.name.equals(name, ignoreCase = true)
     }
 
-    override suspend fun addFarmstand(farmstand: Farmstand) {
-        if (farmstandByName(farmstand.name) != null) {
+    override suspend fun addFarmstand(newFarmstand: NewFarmstand) {
+        if (farmstandByName(newFarmstand.name) != null) {
             throw IllegalStateException("Cannot duplicate farmstand names!")
         }
-        farmstands.add(farmstand)
+        farmstands.add(
+            Farmstand(
+                id = Random.nextInt(),
+                name = newFarmstand.name,
+                initDate = newFarmstand.initDate,
+            )
+        )
     }
 
     override suspend fun removeFarmstand(name: String): Boolean {
@@ -42,6 +49,7 @@ class FakeFarmstandRepository : FarmstandRepository {
         if (farmstand.shutdownDate != null) return false
 
         val shutdownFarmstand = Farmstand(
+            id = farmstand.id,
             name = farmstand.name,
             initDate = farmstand.initDate,
             shutdownDate = farmstandShutdown.shutdownDate,

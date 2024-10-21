@@ -1,8 +1,8 @@
 package com.farmstandtracker.plugins
 
-import com.farmstandtracker.model.Farmstand
 import com.farmstandtracker.model.FarmstandRepository
 import com.farmstandtracker.model.FarmstandShutdown
+import com.farmstandtracker.model.NewFarmstand
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.JsonConvertException
 import io.ktor.serialization.kotlinx.json.*
@@ -35,8 +35,8 @@ fun Application.configureSerialization(farmstandRepository: FarmstandRepository)
 
             post {
                 try {
-                    val farmstand = call.receive<Farmstand>()
-                    farmstandRepository.addFarmstand(farmstand)
+                    val newFarmstand = call.receive<NewFarmstand>()
+                    farmstandRepository.addFarmstand(newFarmstand)
                     call.respond(HttpStatusCode.NoContent)
                 } catch (ex: IllegalStateException) {
                     call.respond(HttpStatusCode.BadRequest)
