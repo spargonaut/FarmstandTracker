@@ -42,9 +42,9 @@ class PostgresFarmstandRepository : FarmstandRepository {
         }.id.value
     }
 
-    override suspend fun removeFarmstand(name: String): Boolean = suspendTransaction {
+    override suspend fun removeFarmstand(farmstandId: Int): Boolean = suspendTransaction {
         val rowsDeleted = FarmstandTable.deleteWhere {
-            FarmstandTable.name eq name
+            FarmstandTable.id eq farmstandId
         }
         rowsDeleted == 1
     }

@@ -59,19 +59,6 @@ fun Application.configureSerialization(farmstandRepository: FarmstandRepository)
                     }
                     call.respond(farmstand)
                 }
-                delete {
-                    val name = call.parameters["farmstandName"]
-                    if (name == null) {
-                        call.respond(HttpStatusCode.BadRequest)
-                        return@delete
-                    }
-                    if (farmstandRepository.removeFarmstand(name)) {
-                        call.respond(HttpStatusCode.NoContent)
-                    } else {
-                        call.respond(HttpStatusCode.NotFound)
-                    }
-                }
-
                 post {
                     try {
                         val name = call.parameters["farmstandName"]
@@ -87,6 +74,22 @@ fun Application.configureSerialization(farmstandRepository: FarmstandRepository)
                         call.respond(HttpStatusCode.BadRequest)
                     } catch (ex: JsonConvertException) {
                         call.respond(HttpStatusCode.BadRequest)
+                    }
+                }
+            }
+
+            route("/{farmstandId}") {
+                delete {
+                    val id = call.parameters["farmstandId"]
+                    if (id == null) {
+                        call.respond(HttpStatusCode.BadRequest)
+                        return@delete
+                    }
+                    val farmstandId = id.toInt()
+                    if (farmstandRepository.removeFarmstand(farmstandId)) {
+                        call.respond(HttpStatusCode.NoContent)
+                    } else {
+                        call.respond(HttpStatusCode.NotFound)
                     }
                 }
             }

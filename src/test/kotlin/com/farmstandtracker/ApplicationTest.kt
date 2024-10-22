@@ -186,7 +186,7 @@ class ApplicationTest {
     }
 
     @Test
-    fun `farmstands can be deleted by name`() = testApplication {
+    fun `farmstands can be deleted by id`() = testApplication {
         environment {
             config = MapApplicationConfig()
         }
@@ -210,16 +210,17 @@ class ApplicationTest {
             .map { it.name }
 
         val farmstand = createNewFarmstand()
-        createFarmstandWithPost(client, farmstand)
+        val response = createFarmstandWithPost(client, farmstand)
+        val farmstandId = response.body<Int>()
 
         val responseAfterAdding = client.get("/farmstand/all")
         assertEquals(HttpStatusCode.OK, responseAfterAdding.status)
-        val farmstandsNames = responseAfterAdding
+        val farmstandsIds = responseAfterAdding
             .body<List<Farmstand>>()
-            .map { it.name }
-        assertContains(farmstandsNames, farmstand.name)
+            .map { it.id }
+        assertContains(farmstandsIds, farmstandId)
 
-        val deleteResponse =  client.delete("/farmstand/swimming")
+        val deleteResponse =  client.delete("/farmstand/${farmstandId}")
         assertEquals(HttpStatusCode.NoContent, deleteResponse.status)
 
         val responseAfterDeleting = client.get("/farmstand/all")

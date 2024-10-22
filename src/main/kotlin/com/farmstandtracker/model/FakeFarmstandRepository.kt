@@ -38,8 +38,8 @@ class FakeFarmstandRepository : FarmstandRepository {
         return newId
     }
 
-    override suspend fun removeFarmstand(name: String): Boolean {
-        return farmstands.removeIf { it.name == name }
+    override suspend fun removeFarmstand(farmstandId: Int): Boolean {
+        return farmstands.removeIf { it.id == farmstandId }
     }
 
     override suspend fun shutdownFarmstand(name: String, farmstandShutdown: FarmstandShutdown): Boolean {
