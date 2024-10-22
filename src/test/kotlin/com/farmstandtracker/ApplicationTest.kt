@@ -3,6 +3,7 @@ package com.farmstandtracker
 import com.farmstandtracker.model.FakeFarmstandRepository
 import com.farmstandtracker.model.Farmstand
 import com.farmstandtracker.model.FarmstandShutdown
+import com.farmstandtracker.model.NewFarmstand
 import com.farmstandtracker.plugins.configureRouting
 import com.farmstandtracker.plugins.configureSerialization
 import io.ktor.client.HttpClient
@@ -13,6 +14,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
@@ -20,8 +22,13 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.*
 import kotlinx.datetime.LocalDate
-import kotlin.random.Random
-import kotlin.test.*
+import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.MatcherAssert.assertThat
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
+import kotlin.test.assertContains
 
 class ApplicationTest {
     @Test
@@ -42,20 +49,32 @@ class ApplicationTest {
             }
         }
 
-        val farmstandOne = createFarmstand(
+        val farmstandOne = createNewFarmstand(
             name = "beans"
         )
-        val farmstandTwo = createFarmstand(
+        val farmstandTwo = createNewFarmstand(
             name = "lettuce"
         )
-        val farmstandThree = createFarmstand(
-            name = "mint",
-            shutdownDate = LocalDate(2024, 4, 5)
+        val farmstandThreeName = "mint"
+        val farmstandThree = createNewFarmstand(
+            name = farmstandThreeName,
         )
 
         createFarmstandWithPost(client, farmstandOne)
         createFarmstandWithPost(client, farmstandTwo)
         createFarmstandWithPost(client, farmstandThree)
+
+        val farmstandThreeShutdown = FarmstandShutdown(
+            shutdownDate = LocalDate(2024, 4, 5)
+        )
+        client.post("/${farmstandThreeName}/shutdown") {
+            header(
+                HttpHeaders.ContentType,
+                ContentType.Application.Json
+            )
+
+            setBody(farmstandThreeShutdown)
+        }
 
         val response2 = client.get("/farmstand/all")
         assertEquals(HttpStatusCode.OK, response2.status)
@@ -87,20 +106,32 @@ class ApplicationTest {
             }
         }
 
-        val farmstandOne = createFarmstand(
+        val farmstandOne = createNewFarmstand(
             name = "beans"
         )
-        val farmstandTwo = createFarmstand(
+        val farmstandTwo = createNewFarmstand(
             name = "lettuce"
         )
-        val farmstandThree = createFarmstand(
-            name = "mint",
-            shutdownDate = LocalDate(2024, 4, 5)
+        val farmstandThreeName = "mint"
+        val farmstandThree = createNewFarmstand(
+            name = farmstandThreeName,
         )
 
         createFarmstandWithPost(client, farmstandOne)
         createFarmstandWithPost(client, farmstandTwo)
         createFarmstandWithPost(client, farmstandThree)
+
+        val farmstandThreeShutdown = FarmstandShutdown(
+            shutdownDate = LocalDate(2024, 4, 5)
+        )
+        client.post("/${farmstandThreeName}/shutdown") {
+            header(
+                HttpHeaders.ContentType,
+                ContentType.Application.Json
+            )
+
+            setBody(farmstandThreeShutdown)
+        }
 
         val response2 = client.get("/farmstand")
         assertEquals(HttpStatusCode.OK, response2.status)
@@ -131,13 +162,13 @@ class ApplicationTest {
             }
         }
 
-        val farmstandOne = createFarmstand(
+        val farmstandOne = createNewFarmstand(
             name = "beans"
         )
 
-        val farmstandTwo = createFarmstand(
-            name = "mint",
-            shutdownDate = LocalDate(2024, 4, 5)
+        val farmstandTwoName = "mint"
+        val farmstandTwo = createNewFarmstand(
+            name = farmstandTwoName,
         )
 
         createFarmstandWithPost(client, farmstandOne)
@@ -178,7 +209,7 @@ class ApplicationTest {
             .body<List<Farmstand>>()
             .map { it.name }
 
-        val farmstand = createFarmstand()
+        val farmstand = createNewFarmstand()
         createFarmstandWithPost(client, farmstand)
 
         val responseAfterAdding = client.get("/farmstand/all")
@@ -200,6 +231,33 @@ class ApplicationTest {
     }
 
     @Test
+    fun `creating a farmstand should return the ID`() = testApplication {
+        environment {
+            config = MapApplicationConfig()
+        }
+
+        application {
+            val repository = FakeFarmstandRepository()
+            configureSerialization(repository)
+            configureRouting()
+        }
+
+        val client = createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+        }
+
+        val newFarmstand = createNewFarmstand()
+        val response = createFarmstandWithPost(client, newFarmstand)
+
+        val id = response.body<Int>()
+
+        assertEquals(HttpStatusCode.Created, response.status)
+        assertThat(id, instanceOf(Int::class.java))
+    }
+
+    @Test
     fun `farmstands can be retrieved by name`() = testApplication {
         environment {
             config = MapApplicationConfig()
@@ -217,13 +275,14 @@ class ApplicationTest {
             }
         }
 
-        val farmstand = createFarmstand()
+        val farmstand = createNewFarmstand()
         createFarmstandWithPost(client, farmstand)
 
         val urlString = "farmstand/${farmstand.name}"
         val retrievedFarmstand = client.get(urlString).body<Farmstand>()
 
-        assertEquals(retrievedFarmstand, farmstand)
+        assertEquals(farmstand.name, retrievedFarmstand.name)
+        assertEquals(farmstand.initDate, retrievedFarmstand.initDate)
     }
 
     @Test
@@ -268,7 +327,7 @@ class ApplicationTest {
             }
         }
 
-        val farmstand = createFarmstand()
+        val farmstand = createNewFarmstand()
         createFarmstandWithPost(client, farmstand)
 
         val farmstandShutdown = FarmstandShutdown(LocalDate(2024, 5, 6))
@@ -301,7 +360,7 @@ class ApplicationTest {
             }
         }
 
-        val farmstand = createFarmstand()
+        val farmstand = createNewFarmstand()
         createFarmstandWithPost(client, farmstand)
 
         val originalFarmstandShutdown = FarmstandShutdown(LocalDate(2024, 5, 6))
@@ -325,15 +384,13 @@ class ApplicationTest {
         assertEquals(HttpStatusCode.NotFound, secondShutdownResponse.status)
     }
 
-    private fun createFarmstand(
-        id: Int = Random.nextInt(),
+    private fun createNewFarmstand(
         name: String = "swimming",
         initDate: LocalDate = LocalDate(2024, 4, 1),
-        shutdownDate: LocalDate? = null
-    ) = Farmstand(id, name, initDate, shutdownDate)
+    ) = NewFarmstand(name, initDate)
 
-    private suspend fun createFarmstandWithPost(client: HttpClient, farmstand: Farmstand) {
-        val response1 = client.post("/farmstand") {
+    private suspend fun createFarmstandWithPost(client: HttpClient, farmstand: NewFarmstand): HttpResponse {
+        val response = client.post("/farmstand") {
             header(
                 HttpHeaders.ContentType,
                 ContentType.Application.Json
@@ -341,6 +398,7 @@ class ApplicationTest {
 
             setBody(farmstand)
         }
-        assertEquals(HttpStatusCode.NoContent, response1.status)
+        assertEquals(HttpStatusCode.Created, response.status)
+        return response
     }
 }

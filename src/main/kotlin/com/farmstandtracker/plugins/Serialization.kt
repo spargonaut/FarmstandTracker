@@ -36,8 +36,8 @@ fun Application.configureSerialization(farmstandRepository: FarmstandRepository)
             post {
                 try {
                     val newFarmstand = call.receive<NewFarmstand>()
-                    farmstandRepository.addFarmstand(newFarmstand)
-                    call.respond(HttpStatusCode.NoContent)
+                    val farmstandId = farmstandRepository.addFarmstand(newFarmstand)
+                    call.respond(HttpStatusCode.Created, farmstandId)
                 } catch (ex: IllegalStateException) {
                     call.respond(HttpStatusCode.BadRequest)
                 } catch (ex: JsonConvertException) {

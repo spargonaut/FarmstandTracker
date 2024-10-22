@@ -35,11 +35,11 @@ class PostgresFarmstandRepository : FarmstandRepository {
             .firstOrNull()
     }
 
-    override suspend fun addFarmstand(newFarmstand: NewFarmstand): Unit = suspendTransaction {
+    override suspend fun addFarmstand(newFarmstand: NewFarmstand): Int = suspendTransaction {
         FarmstandDAO.new {
             name = newFarmstand.name
             initDate = newFarmstand.initDate.toJavaLocalDate()
-        }
+        }.id.value
     }
 
     override suspend fun removeFarmstand(name: String): Boolean = suspendTransaction {
