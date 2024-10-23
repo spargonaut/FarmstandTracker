@@ -259,7 +259,7 @@ class ApplicationTest {
     }
 
     @Test
-    fun `farmstands can be retrieved by name`() = testApplication {
+    fun `farmstands can be retrieved by ID`() = testApplication {
         environment {
             config = MapApplicationConfig()
         }
@@ -277,9 +277,9 @@ class ApplicationTest {
         }
 
         val farmstand = createNewFarmstand()
-        createFarmstandWithPost(client, farmstand)
+        val farmstandId = createFarmstandWithPost(client, farmstand).body<Int>()
 
-        val urlString = "farmstand/${farmstand.name}"
+        val urlString = "farmstand/${farmstandId}"
         val retrievedFarmstand = client.get(urlString).body<Farmstand>()
 
         assertEquals(farmstand.name, retrievedFarmstand.name)
@@ -287,7 +287,7 @@ class ApplicationTest {
     }
 
     @Test
-    fun `retrieving a farmstand by name with a bad name produces a NotFound response`() = testApplication {
+    fun `retrieving a farmstand by ID with a bad Id produces a NotFound response`() = testApplication {
         environment {
             config = MapApplicationConfig()
         }
@@ -304,7 +304,7 @@ class ApplicationTest {
             }
         }
 
-        val urlString = "/farmstand/bad-name"
+        val urlString = "/farmstand/12345"
         val responseStatus = client.get(urlString).status
         assertEquals(HttpStatusCode.NotFound, responseStatus)
 

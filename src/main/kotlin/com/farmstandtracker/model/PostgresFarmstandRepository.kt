@@ -27,9 +27,9 @@ class PostgresFarmstandRepository : FarmstandRepository {
         FarmstandDAO.all().map(::daoToModel)
     }
 
-    override suspend fun farmstandByName(name: String): Farmstand? = suspendTransaction {
+    override suspend fun farmstandById(farmstandId: Int): Farmstand? = suspendTransaction {
         FarmstandDAO
-            .find { (FarmstandTable.name eq name) }
+            .find { (FarmstandTable.id eq farmstandId) }
             .limit(1)
             .map(::daoToModel)
             .firstOrNull()

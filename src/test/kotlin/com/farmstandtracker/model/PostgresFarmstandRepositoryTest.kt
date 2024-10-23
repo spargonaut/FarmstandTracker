@@ -87,8 +87,8 @@ class PostgresFarmstandRepositoryTest {
         )
 
         val fetchedFarmstand = runBlocking {
-            repository.addFarmstand(newFarmstand)
-            repository.farmstandByName(farmstandName)
+            val farmstandId = repository.addFarmstand(newFarmstand)
+            repository.farmstandById(farmstandId)
         }
 
         assertEquals(newFarmstand.name, fetchedFarmstand?.name)
@@ -111,7 +111,7 @@ class PostgresFarmstandRepositoryTest {
 
         val fetchedFarmstand = runBlocking {
             repository.shutdownFarmstand(farmstandId, farmstandShutdown)
-            repository.farmstandByName(farmstandName)
+            repository.farmstandById(farmstandId)
         }
 
         assertEquals(shutdownDate, fetchedFarmstand?.shutdownDate)

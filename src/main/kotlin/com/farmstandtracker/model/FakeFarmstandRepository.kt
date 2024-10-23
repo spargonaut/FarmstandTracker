@@ -19,14 +19,11 @@ class FakeFarmstandRepository : FarmstandRepository {
 
     override suspend fun allFarmstands(): List<Farmstand> = farmstands
 
-    override suspend fun farmstandByName(name: String) = farmstands.find {
-        it.name.equals(name, ignoreCase = true)
+    override suspend fun farmstandById(farmstandId: Int) = farmstands.find {
+        it.id.equals(farmstandId)
     }
 
     override suspend fun addFarmstand(newFarmstand: NewFarmstand): Int {
-        if (farmstandByName(newFarmstand.name) != null) {
-            throw IllegalStateException("Cannot duplicate farmstand names!")
-        }
         val newId = Random.nextInt(0, 100000000)
         farmstands.add(
             Farmstand(

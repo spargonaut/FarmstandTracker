@@ -45,23 +45,21 @@ fun Application.configureSerialization(farmstandRepository: FarmstandRepository)
                 }
             }
 
-            route("/{farmstandName}") {
+            route("/{farmstandId}") {
                 get {
-                    val name = call.parameters["farmstandName"]
-                    if (name == null) {
+                    val id = call.parameters["farmstandId"]
+                    if (id == null) {
                         call.respond(HttpStatusCode.BadRequest)
                         return@get
                     }
-                    val farmstand = farmstandRepository.farmstandByName(name)
+                    val farmstandId = id.toInt()
+                    val farmstand = farmstandRepository.farmstandById(farmstandId)
                     if (farmstand == null) {
                         call.respond(HttpStatusCode.NotFound)
                         return@get
                     }
                     call.respond(farmstand)
                 }
-            }
-
-            route("/{farmstandId}") {
                 delete {
                     val id = call.parameters["farmstandId"]
                     if (id == null) {
