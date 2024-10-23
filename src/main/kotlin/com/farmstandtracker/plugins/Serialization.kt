@@ -59,23 +59,6 @@ fun Application.configureSerialization(farmstandRepository: FarmstandRepository)
                     }
                     call.respond(farmstand)
                 }
-                post {
-                    try {
-                        val name = call.parameters["farmstandName"]
-                        val farmstandShutdown = call.receive<FarmstandShutdown>()
-                        if (name.isNullOrEmpty()) {
-                            call.respond(HttpStatusCode.BadRequest)
-                        } else if (farmstandRepository.shutdownFarmstand(name, farmstandShutdown)) {
-                            call.respond(HttpStatusCode.Accepted)
-                        } else {
-                            call.respond(HttpStatusCode.NotFound)
-                        }
-                    } catch (ex: IllegalStateException) {
-                        call.respond(HttpStatusCode.BadRequest)
-                    } catch (ex: JsonConvertException) {
-                        call.respond(HttpStatusCode.BadRequest)
-                    }
-                }
             }
 
             route("/{farmstandId}") {
@@ -90,6 +73,27 @@ fun Application.configureSerialization(farmstandRepository: FarmstandRepository)
                         call.respond(HttpStatusCode.NoContent)
                     } else {
                         call.respond(HttpStatusCode.NotFound)
+                    }
+                }
+                post {
+                    try {
+                        val id = call.parameters["farmstandId"]
+                        val farmstandShutdown = call.receive<FarmstandShutdown>()
+
+                        if (id.isNullOrEmpty()) {
+                            call.respond(HttpStatusCode.BadRequest)
+                        } else {
+                            val farmstandId = id.toInt()
+                            if (farmstandRepository.shutdownFarmstand(farmstandId, farmstandShutdown)) {
+                                call.respond(HttpStatusCode.Accepted)
+                            } else {
+                                call.respond(HttpStatusCode.NotFound)
+                            }
+                        }
+                    } catch (ex: IllegalStateException) {
+                        call.respond(HttpStatusCode.BadRequest)
+                    } catch (ex: JsonConvertException) {
+                        call.respond(HttpStatusCode.BadRequest)
                     }
                 }
             }

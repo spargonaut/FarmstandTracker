@@ -329,10 +329,11 @@ class ApplicationTest {
         }
 
         val farmstand = createNewFarmstand()
-        createFarmstandWithPost(client, farmstand)
+        val response = createFarmstandWithPost(client, farmstand)
+        val farmstandId = response.body<Int>()
 
         val farmstandShutdown = FarmstandShutdown(LocalDate(2024, 5, 6))
-        val shutdownResponse = client.post("/farmstand/${farmstand.name}") {
+        val shutdownResponse = client.post("/farmstand/${farmstandId}") {
             header(
                 HttpHeaders.ContentType,
                 ContentType.Application.Json
@@ -362,10 +363,11 @@ class ApplicationTest {
         }
 
         val farmstand = createNewFarmstand()
-        createFarmstandWithPost(client, farmstand)
+        val response = createFarmstandWithPost(client, farmstand)
+        val farmstandId = response.body<Int>()
 
         val originalFarmstandShutdown = FarmstandShutdown(LocalDate(2024, 5, 6))
-        client.post("/farmstand/${farmstand.name}") {
+        client.post("/farmstand/${farmstandId}") {
             header(
                 HttpHeaders.ContentType,
                 ContentType.Application.Json
@@ -374,7 +376,7 @@ class ApplicationTest {
         }
 
         val repeatedFarmstandShutdown = FarmstandShutdown(LocalDate(2024, 5, 8))
-        val secondShutdownResponse = client.post("/farmstand/${farmstand.name}") {
+        val secondShutdownResponse = client.post("/farmstand/${farmstandId}") {
             header(
                 HttpHeaders.ContentType,
                 ContentType.Application.Json

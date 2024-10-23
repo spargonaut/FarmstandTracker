@@ -49,9 +49,9 @@ class PostgresFarmstandRepository : FarmstandRepository {
         rowsDeleted == 1
     }
 
-    override suspend fun shutdownFarmstand(name: String, farmstandShutdown: FarmstandShutdown): Boolean {
+    override suspend fun shutdownFarmstand(farmstandId: Int, farmstandShutdown: FarmstandShutdown): Boolean {
         return transaction {
-            val updatedCount = FarmstandTable.update({ FarmstandTable.name eq name }) {
+            val updatedCount = FarmstandTable.update({ FarmstandTable.id eq farmstandId }) {
                 it[shutdownDate] = farmstandShutdown.shutdownDate.toJavaLocalDate()
             }
             updatedCount == 1

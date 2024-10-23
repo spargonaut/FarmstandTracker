@@ -7,5 +7,5 @@ interface FarmstandRepository {
     suspend fun farmstandByName(name: String): Farmstand?
     suspend fun addFarmstand(newFarmstand: NewFarmstand): Int
     suspend fun removeFarmstand(farmstandId: Int): Boolean
-    suspend fun shutdownFarmstand(name: String, farmstandShutdown: FarmstandShutdown): Boolean
+    suspend fun shutdownFarmstand(farmstandId: Int, farmstandShutdown: FarmstandShutdown): Boolean
 }

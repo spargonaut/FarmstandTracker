@@ -42,9 +42,9 @@ class FakeFarmstandRepository : FarmstandRepository {
         return farmstands.removeIf { it.id == farmstandId }
     }
 
-    override suspend fun shutdownFarmstand(name: String, farmstandShutdown: FarmstandShutdown): Boolean {
+    override suspend fun shutdownFarmstand(farmstandId: Int, farmstandShutdown: FarmstandShutdown): Boolean {
         val farmstand = farmstands.find { fs ->
-            fs.name.equals(name, ignoreCase = true)
+            fs.id.equals(farmstandId)
         }
 
         if (farmstand == null) return false
