@@ -52,8 +52,6 @@ class PostgresFarmstandRepositoryTest {
                 """
                 )
             }
-
-            val bar = 1 * 3
         }
 
         @AfterAll
