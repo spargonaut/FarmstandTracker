@@ -25,6 +25,14 @@ class FakeFarmstandRepository : FarmstandRepository {
 
     override suspend fun addFarmstand(newFarmstand: NewFarmstand): Int {
         val newId = Random.nextInt(0, 100000000)
+        val duplicateFarmstands = allFarmstands()
+            .filter { it.name == newFarmstand.name }
+            .filter { it.initDate == newFarmstand.initDate }
+        if (duplicateFarmstands.isNotEmpty()) {
+            throw IllegalStateException("Cannot duplicate a farmstand!\n" +
+                    "a farmstand named: ${newFarmstand} with init date of ${newFarmstand.initDate} already exists")
+        }
+
         farmstands.add(
             Farmstand(
                 id = newId,

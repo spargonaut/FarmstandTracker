@@ -4,6 +4,7 @@ import com.farmstandtracker.db.FarmstandDAO
 import com.farmstandtracker.db.FarmstandTable
 import com.farmstandtracker.db.daoToModel
 import com.farmstandtracker.db.suspendTransaction
+import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.toJavaLocalDate
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
@@ -36,6 +37,16 @@ class PostgresFarmstandRepository : FarmstandRepository {
     }
 
     override suspend fun addFarmstand(newFarmstand: NewFarmstand): Int = suspendTransaction {
+        val duplicateFarmstands = runBlocking {
+            allFarmstands()
+                .filter { it.name == newFarmstand.name }
+                .filter { it.initDate == newFarmstand.initDate }
+        }
+        if (duplicateFarmstands.isNotEmpty()) {
+            throw IllegalStateException("Cannot duplicate a farmstand!\n" +
+                    "a farmstand named: ${newFarmstand} with init date of ${newFarmstand.initDate} already exists")
+        }
+
         FarmstandDAO.new {
             name = newFarmstand.name
             initDate = newFarmstand.initDate.toJavaLocalDate()

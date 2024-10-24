@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils
 import kotlin.test.assertContains
+import kotlin.test.assertFailsWith
 
 
 class PostgresFarmstandRepositoryTest {
@@ -91,6 +92,27 @@ class PostgresFarmstandRepositoryTest {
 
         assertEquals(newFarmstand.name, fetchedFarmstand?.name)
         assertEquals(newFarmstand.initDate, fetchedFarmstand?.initDate)
+    }
+
+    @Test
+    fun `should throw when attempting to add farmstand with identical name and init date`() {
+
+        val farmstandName = RandomStringUtils.randomAlphanumeric(5)
+        val initDate = LocalDate(2024, 2, 14)
+        val newFarmstand = NewFarmstand(name = farmstandName, initDate = initDate)
+
+        val repository = PostgresFarmstandRepository()
+        runBlocking {
+            val farmstandId = repository.addFarmstand(newFarmstand)
+            repository.farmstandById(farmstandId)
+        }
+
+        assertFailsWith<IllegalStateException> {
+            runBlocking {
+                val farmstandId = repository.addFarmstand(newFarmstand)
+                repository.farmstandById(farmstandId)
+            }
+        }
     }
 
     @Test
