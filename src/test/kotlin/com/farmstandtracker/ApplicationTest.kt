@@ -287,7 +287,7 @@ class ApplicationTest {
     }
 
     @Test
-    fun `retrieving a farmstand by ID with a bad Id produces a NotFound response`() = testApplication {
+    fun `retrieving a farmstand by ID with a bad Id Integer produces a NotFound response`() = testApplication {
         environment {
             config = MapApplicationConfig()
         }
@@ -307,7 +307,29 @@ class ApplicationTest {
         val urlString = "/farmstand/12345"
         val responseStatus = client.get(urlString).status
         assertEquals(HttpStatusCode.NotFound, responseStatus)
+    }
 
+    @Test
+    fun `retrieving a farmstand by ID with a bad Id string produces a Bad Request response`() = testApplication {
+        environment {
+            config = MapApplicationConfig()
+        }
+
+        application {
+            val repository = FakeFarmstandRepository()
+            configureSerialization(repository)
+            configureRouting()
+        }
+
+        val client = createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+        }
+
+        val urlString = "/farmstand/A-bad-id"
+        val responseStatus = client.get(urlString).status
+        assertEquals(HttpStatusCode.BadRequest, responseStatus)
     }
 
     @Test

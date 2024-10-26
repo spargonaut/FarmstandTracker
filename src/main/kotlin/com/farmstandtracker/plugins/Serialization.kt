@@ -48,11 +48,11 @@ fun Application.configureSerialization(farmstandRepository: FarmstandRepository)
             route("/{farmstandId}") {
                 get {
                     val id = call.parameters["farmstandId"]
-                    if (id == null) {
+                    val farmstandId = id?.toIntOrNull()
+                    if (farmstandId == null) {
                         call.respond(HttpStatusCode.BadRequest)
                         return@get
                     }
-                    val farmstandId = id.toInt()
                     val farmstand = farmstandRepository.farmstandById(farmstandId)
                     if (farmstand == null) {
                         call.respond(HttpStatusCode.NotFound)
