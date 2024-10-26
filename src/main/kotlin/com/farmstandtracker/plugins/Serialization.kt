@@ -78,10 +78,10 @@ fun Application.configureSerialization(farmstandRepository: FarmstandRepository)
                         val id = call.parameters["farmstandId"]
                         val farmstandShutdown = call.receive<FarmstandShutdown>()
 
-                        if (id.isNullOrEmpty()) {
+                        val farmstandId = id?.toIntOrNull()
+                        if (farmstandId == null) {
                             call.respond(HttpStatusCode.BadRequest)
                         } else {
-                            val farmstandId = id.toInt()
                             if (farmstandRepository.shutdownFarmstand(farmstandId, farmstandShutdown)) {
                                 call.respond(HttpStatusCode.Accepted)
                             } else {

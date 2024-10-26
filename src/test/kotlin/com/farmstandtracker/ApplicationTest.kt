@@ -390,6 +390,36 @@ class ApplicationTest {
     }
 
     @Test
+    fun `attempting to shutdown a farmstand witha bad Id string produces a Bad Request response`() = testApplication {
+        environment {
+            config = MapApplicationConfig()
+        }
+
+        application {
+            val repository = FakeFarmstandRepository()
+            configureSerialization(repository)
+            configureRouting()
+        }
+
+        val client = createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+        }
+
+        val farmstandShutdown = FarmstandShutdown(LocalDate(2024, 5, 6))
+        val urlString = "/farmstand/A-bad-id"
+        val response = client.post(urlString) {
+            header(
+                HttpHeaders.ContentType,
+                ContentType.Application.Json
+            )
+            setBody(farmstandShutdown)
+        }
+        assertEquals(HttpStatusCode.BadRequest, response.status)
+    }
+
+    @Test
     fun `repeated attempts to shutdown an already shutdown farmstand should be ignored`() = testApplication {
         environment {
             config = MapApplicationConfig()
