@@ -47,12 +47,12 @@ fun Application.configureSerialization(farmstandRepository: FarmstandRepository)
 
             route("/{farmstandId}") {
                 get {
-                    val id = call.parameters["farmstandId"]
-                    val farmstandId = id?.toIntOrNull()
+                    val farmstandId = call.parameters["farmstandId"]?.toIntOrNull()
                     if (farmstandId == null) {
                         call.respond(HttpStatusCode.BadRequest)
                         return@get
                     }
+
                     val farmstand = farmstandRepository.farmstandById(farmstandId)
                     if (farmstand == null) {
                         call.respond(HttpStatusCode.NotFound)
@@ -60,33 +60,34 @@ fun Application.configureSerialization(farmstandRepository: FarmstandRepository)
                     }
                     call.respond(farmstand)
                 }
+
                 delete {
-                    val id = call.parameters["farmstandId"]
-                    val farmstandId = id?.toIntOrNull()
+                    val farmstandId = call.parameters["farmstandId"]?.toIntOrNull()
                     if (farmstandId == null) {
                         call.respond(HttpStatusCode.BadRequest)
                         return@delete
                     }
+
                     if (farmstandRepository.removeFarmstand(farmstandId)) {
                         call.respond(HttpStatusCode.NoContent)
                     } else {
                         call.respond(HttpStatusCode.NotFound)
                     }
                 }
+
                 post {
                     try {
-                        val id = call.parameters["farmstandId"]
-                        val farmstandShutdown = call.receive<FarmstandShutdown>()
-
-                        val farmstandId = id?.toIntOrNull()
+                        val farmstandId = call.parameters["farmstandId"]?.toIntOrNull()
                         if (farmstandId == null) {
                             call.respond(HttpStatusCode.BadRequest)
+                            return@post
+                        }
+
+                        val farmstandShutdown = call.receive<FarmstandShutdown>()
+                        if (farmstandRepository.shutdownFarmstand(farmstandId, farmstandShutdown)) {
+                            call.respond(HttpStatusCode.Accepted)
                         } else {
-                            if (farmstandRepository.shutdownFarmstand(farmstandId, farmstandShutdown)) {
-                                call.respond(HttpStatusCode.Accepted)
-                            } else {
-                                call.respond(HttpStatusCode.NotFound)
-                            }
+                            call.respond(HttpStatusCode.NotFound)
                         }
                     } catch (ex: IllegalStateException) {
                         call.respond(HttpStatusCode.BadRequest)
