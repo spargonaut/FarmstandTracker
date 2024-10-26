@@ -333,6 +333,29 @@ class ApplicationTest {
     }
 
     @Test
+    fun `deleting a farmstand by ID with a bad Id string produces a Bad Request response`() = testApplication {
+        environment {
+            config = MapApplicationConfig()
+        }
+
+        application {
+            val repository = FakeFarmstandRepository()
+            configureSerialization(repository)
+            configureRouting()
+        }
+
+        val client = createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+        }
+
+        val urlString = "/farmstand/A-bad-id"
+        val responseStatus = client.delete(urlString).status
+        assertEquals(HttpStatusCode.BadRequest, responseStatus)
+    }
+
+    @Test
     fun `farmstand can be shutdown by name`() = testApplication {
         environment {
             config = MapApplicationConfig()

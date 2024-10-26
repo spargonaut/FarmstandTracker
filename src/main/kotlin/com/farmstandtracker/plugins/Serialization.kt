@@ -62,11 +62,11 @@ fun Application.configureSerialization(farmstandRepository: FarmstandRepository)
                 }
                 delete {
                     val id = call.parameters["farmstandId"]
-                    if (id == null) {
+                    val farmstandId = id?.toIntOrNull()
+                    if (farmstandId == null) {
                         call.respond(HttpStatusCode.BadRequest)
                         return@delete
                     }
-                    val farmstandId = id.toInt()
                     if (farmstandRepository.removeFarmstand(farmstandId)) {
                         call.respond(HttpStatusCode.NoContent)
                     } else {
