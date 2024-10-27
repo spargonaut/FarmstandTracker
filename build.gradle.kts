@@ -40,6 +40,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
     implementation("org.jetbrains.exposed:exposed-java-time:0.51.1")
+    implementation("io.ktor:ktor-server-swagger:$ktor_version")
 
     testImplementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")

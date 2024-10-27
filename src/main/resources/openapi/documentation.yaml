@@ -1,0 +1,192 @@
+openapi: "3.1.0"
+swagger: "2.0"
+info:
+  title: "FarmstandTracker API"
+  description: "FarmstandTracker API"
+  version: "1.0.0"
+servers:
+- url: "https://FarmstandTracker"
+paths:
+  /farmstand:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Farmstand"
+    post:
+      description: ""
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewFarmstand"
+        required: true
+      responses:
+        "201":
+          description: "Created"
+          content:
+            '*/*':
+              schema:
+                type: "integer"
+                format: "int32"
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /farmstand/{farmstandId}:
+    delete:
+      description: ""
+      parameters:
+      - name: "farmstandId"
+        in: "path"
+        required: true
+        schema:
+          type: "integer"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+        "204":
+          description: "No Content"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+    get:
+      description: ""
+      parameters:
+      - name: "farmstandId"
+        in: "path"
+        required: true
+        schema:
+          type: "integer"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Farmstand"
+    post:
+      description: ""
+      parameters:
+      - name: "farmstandId"
+        in: "path"
+        required: true
+        schema:
+          type: "integer"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FarmstandShutdown"
+        required: true
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+        "202":
+          description: "Accepted"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /farmstand/all:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Farmstand"
+  /farmstand/shutdown:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Farmstand"
+components:
+  schemas:
+    LocalDate:
+      type: "object"
+      properties: {}
+    Farmstand:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        name:
+          type: "string"
+        initDate:
+          $ref: "#/components/schemas/LocalDate"
+        shutdownDate:
+          $ref: "#/components/schemas/LocalDate"
+      required:
+      - "name"
+      - "initDate"
+    NewFarmstand:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        initDate:
+          $ref: "#/components/schemas/LocalDate"
+      required:
+      - "name"
+      - "initDate"
+    FarmstandShutdown:
+      type: "object"
+      properties:
+        shutdownDate:
+          $ref: "#/components/schemas/LocalDate"
+      required:
+      - "shutdownDate"
