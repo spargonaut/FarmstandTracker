@@ -1,7 +1,9 @@
 package com.farmstandtracker.plugins
 
+import com.farmstandtracker.model.NewFarmstandMeasurement
 import com.farmstandtracker.model.FarmstandRepository
 import com.farmstandtracker.model.FarmstandShutdown
+import com.farmstandtracker.model.MeasurementRepository
 import com.farmstandtracker.model.NewFarmstand
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.JsonConvertException
@@ -12,7 +14,10 @@ import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Application.configureSerialization(farmstandRepository: FarmstandRepository) {
+fun Application.configureSerialization(
+    farmstandRepository: FarmstandRepository,
+    measurementRepository: MeasurementRepository
+) {
     install(ContentNegotiation) {
         json()
     }
@@ -96,6 +101,28 @@ fun Application.configureSerialization(farmstandRepository: FarmstandRepository)
                     }
                 }
             }
+        }
+
+        route("/{farmstandId}/measurement") {
+            post {
+                try {
+                    val farmstandId = call.parameters["farmstandId"]?.toIntOrNull()
+                    if (farmstandId == null) {
+                        call.respond(HttpStatusCode.BadRequest)
+                        return@post
+                    }
+
+                    val newFarmstandMeasurement = call.receive<NewFarmstandMeasurement>()
+                    val measurementId = measurementRepository.add(farmstandId, newFarmstandMeasurement)
+                    call.respond(HttpStatusCode.Created, measurementId)
+
+                } catch (ex: IllegalStateException) {
+                    call.respond(HttpStatusCode.BadRequest)
+                } catch (ex: JsonConvertException) {
+                    call.respond(HttpStatusCode.BadRequest)
+                }
+            }
+
         }
     }
 }

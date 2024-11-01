@@ -1,5 +1,6 @@
 package com.farmstandtracker
 
+import com.farmstandtracker.model.FakeMeasurementRepository
 import com.farmstandtracker.model.PostgresFarmstandRepository
 import com.farmstandtracker.plugins.*
 import io.ktor.server.application.*
@@ -9,7 +10,10 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
-    configureSerialization(PostgresFarmstandRepository())
+    configureSerialization(
+        PostgresFarmstandRepository(),
+        FakeMeasurementRepository()
+    )
     configureDatabases()
     configureRouting()
 }

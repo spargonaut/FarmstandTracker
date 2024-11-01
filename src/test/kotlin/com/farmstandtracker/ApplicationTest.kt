@@ -1,9 +1,14 @@
 package com.farmstandtracker
 
 import com.farmstandtracker.model.FakeFarmstandRepository
+import com.farmstandtracker.model.FakeMeasurementRepository
 import com.farmstandtracker.model.Farmstand
 import com.farmstandtracker.model.FarmstandShutdown
+import com.farmstandtracker.model.MeasurementContext
 import com.farmstandtracker.model.NewFarmstand
+import com.farmstandtracker.model.NewFarmstandMeasurement
+import com.farmstandtracker.model.Temperature
+import com.farmstandtracker.model.TemperatureMetric
 import com.farmstandtracker.plugins.configureRouting
 import com.farmstandtracker.plugins.configureSerialization
 import io.ktor.client.HttpClient
@@ -38,8 +43,12 @@ class ApplicationTest {
         }
 
         application {
-            val repository = FakeFarmstandRepository()
-            configureSerialization(repository)
+            val farmstandRepository = FakeFarmstandRepository()
+            val measurementRepository = FakeMeasurementRepository()
+            configureSerialization(
+                farmstandRepository,
+                measurementRepository
+            )
             configureRouting()
         }
 
@@ -95,8 +104,12 @@ class ApplicationTest {
         }
 
         application {
-            val repository = FakeFarmstandRepository()
-            configureSerialization(repository)
+            val farmstandRepository = FakeFarmstandRepository()
+            val measurementRepository = FakeMeasurementRepository()
+            configureSerialization(
+                farmstandRepository,
+                measurementRepository
+            )
             configureRouting()
         }
 
@@ -151,8 +164,12 @@ class ApplicationTest {
         }
 
         application {
-            val repository = FakeFarmstandRepository()
-            configureSerialization(repository)
+            val farmstandRepository = FakeFarmstandRepository()
+            val measurementRepository = FakeMeasurementRepository()
+            configureSerialization(
+                farmstandRepository,
+                measurementRepository
+            )
             configureRouting()
         }
 
@@ -192,8 +209,12 @@ class ApplicationTest {
         }
 
         application {
-            val repository = FakeFarmstandRepository()
-            configureSerialization(repository)
+            val farmstandRepository = FakeFarmstandRepository()
+            val measurementRepository = FakeMeasurementRepository()
+            configureSerialization(
+                farmstandRepository,
+                measurementRepository
+            )
             configureRouting()
         }
 
@@ -238,8 +259,12 @@ class ApplicationTest {
         }
 
         application {
-            val repository = FakeFarmstandRepository()
-            configureSerialization(repository)
+            val farmstandRepository = FakeFarmstandRepository()
+            val measurementRepository = FakeMeasurementRepository()
+            configureSerialization(
+                farmstandRepository,
+                measurementRepository
+            )
             configureRouting()
         }
 
@@ -265,8 +290,12 @@ class ApplicationTest {
         }
 
         application {
-            val repository = FakeFarmstandRepository()
-            configureSerialization(repository)
+            val farmstandRepository = FakeFarmstandRepository()
+            val measurementRepository = FakeMeasurementRepository()
+            configureSerialization(
+                farmstandRepository,
+                measurementRepository
+            )
             configureRouting()
         }
 
@@ -293,8 +322,12 @@ class ApplicationTest {
         }
 
         application {
-            val repository = FakeFarmstandRepository()
-            configureSerialization(repository)
+            val farmstandRepository = FakeFarmstandRepository()
+            val measurementRepository = FakeMeasurementRepository()
+            configureSerialization(
+                farmstandRepository,
+                measurementRepository
+            )
             configureRouting()
         }
 
@@ -316,8 +349,12 @@ class ApplicationTest {
         }
 
         application {
-            val repository = FakeFarmstandRepository()
-            configureSerialization(repository)
+            val farmstandRepository = FakeFarmstandRepository()
+            val measurementRepository = FakeMeasurementRepository()
+            configureSerialization(
+                farmstandRepository,
+                measurementRepository
+            )
             configureRouting()
         }
 
@@ -339,8 +376,12 @@ class ApplicationTest {
         }
 
         application {
-            val repository = FakeFarmstandRepository()
-            configureSerialization(repository)
+            val farmstandRepository = FakeFarmstandRepository()
+            val measurementRepository = FakeMeasurementRepository()
+            configureSerialization(
+                farmstandRepository,
+                measurementRepository
+            )
             configureRouting()
         }
 
@@ -362,8 +403,12 @@ class ApplicationTest {
         }
 
         application {
-            val repository = FakeFarmstandRepository()
-            configureSerialization(repository)
+            val farmstandRepository = FakeFarmstandRepository()
+            val measurementRepository = FakeMeasurementRepository()
+            configureSerialization(
+                farmstandRepository,
+                measurementRepository
+            )
             configureRouting()
         }
 
@@ -396,8 +441,12 @@ class ApplicationTest {
         }
 
         application {
-            val repository = FakeFarmstandRepository()
-            configureSerialization(repository)
+            val farmstandRepository = FakeFarmstandRepository()
+            val measurementRepository = FakeMeasurementRepository()
+            configureSerialization(
+                farmstandRepository,
+                measurementRepository
+            )
             configureRouting()
         }
 
@@ -426,8 +475,12 @@ class ApplicationTest {
         }
 
         application {
-            val repository = FakeFarmstandRepository()
-            configureSerialization(repository)
+            val farmstandRepository = FakeFarmstandRepository()
+            val measurementRepository = FakeMeasurementRepository()
+            configureSerialization(
+                farmstandRepository,
+                measurementRepository
+            )
             configureRouting()
         }
 
@@ -460,6 +513,54 @@ class ApplicationTest {
         }
 
         assertEquals(HttpStatusCode.NotFound, secondShutdownResponse.status)
+    }
+
+    @Test
+    fun `adding a measurement should return the ID for that measurement`() = testApplication {
+        environment {
+            config = MapApplicationConfig()
+        }
+
+        application {
+            val farmstandRepository = FakeFarmstandRepository()
+            val measurementRepository = FakeMeasurementRepository()
+            configureSerialization(
+                farmstandRepository,
+                measurementRepository
+            )
+            configureRouting()
+        }
+
+        val client = createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+        }
+
+        val newFarmstand = createNewFarmstand()
+        val farmstandResponse = createFarmstandWithPost(client, newFarmstand)
+        val farmstandId = farmstandResponse.body<Int>()
+
+        val newMeasurement = NewFarmstandMeasurement(
+            date = LocalDate(2024, 4, 1),
+            context = MeasurementContext.TAP_WATER,
+            ph = 5.5,
+            temp = Temperature(value = 19, metric = TemperatureMetric.CELCIUS),
+            ec = 2.5,
+            notes = "test measurement"
+        )
+        val measurementResponse = client.post("/${farmstandId}/measurement") {
+            header(
+                HttpHeaders.ContentType,
+                ContentType.Application.Json
+            )
+
+            setBody(newMeasurement)
+        }
+        val measurementId = measurementResponse.body<Int>()
+
+        assertEquals(HttpStatusCode.Created, measurementResponse.status)
+        assertThat(measurementId, instanceOf(Int::class.java))
     }
 
     private fun createNewFarmstand(
