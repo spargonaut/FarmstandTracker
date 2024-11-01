@@ -57,4 +57,8 @@ class FakeMeasurementRepository: MeasurementRepository {
 
         return newId
     }
+
+    override fun allMeasurements(farmstandId: Int): List<FarmstandMeasurement> {
+        return farmstandMeasurements.filter { it.farmstandId == farmstandId }
+    }
 }

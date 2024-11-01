@@ -123,6 +123,17 @@ fun Application.configureSerialization(
                 }
             }
 
+            get {
+                val farmstandId = call.parameters["farmstandId"]?.toIntOrNull()
+                if (farmstandId == null) {
+                    call.respond(HttpStatusCode.BadRequest)
+                    return@get
+                }
+
+                val measurements = measurementRepository.allMeasurements(farmstandId)
+                call.respond(HttpStatusCode.OK, measurements)
+            }
+
         }
     }
 }

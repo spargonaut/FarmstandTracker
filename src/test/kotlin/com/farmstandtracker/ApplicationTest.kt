@@ -3,6 +3,7 @@ package com.farmstandtracker
 import com.farmstandtracker.model.FakeFarmstandRepository
 import com.farmstandtracker.model.FakeMeasurementRepository
 import com.farmstandtracker.model.Farmstand
+import com.farmstandtracker.model.FarmstandMeasurement
 import com.farmstandtracker.model.FarmstandShutdown
 import com.farmstandtracker.model.MeasurementContext
 import com.farmstandtracker.model.NewFarmstand
@@ -561,6 +562,40 @@ class ApplicationTest {
 
         assertEquals(HttpStatusCode.Created, measurementResponse.status)
         assertThat(measurementId, instanceOf(Int::class.java))
+    }
+
+    @Test
+    fun `should be able to fetch all measurements for a farmstand`() = testApplication {
+        environment {
+            config = MapApplicationConfig()
+        }
+
+        application {
+            val farmstandRepository = FakeFarmstandRepository()
+            val measurementRepository = FakeMeasurementRepository()
+            configureSerialization(
+                farmstandRepository,
+                measurementRepository
+            )
+            configureRouting()
+        }
+
+        val client = createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+        }
+
+        val farmstandId = 1 // this is the ID associated with the pre-seed measurements in the FakeMeasurementRepository
+        val measurementResponse = client.get("/${farmstandId}/measurement")
+
+        val measurementContexts = measurementResponse
+            .body<List<FarmstandMeasurement>>()
+            .map { it.context }
+
+        assertContains(measurementContexts, MeasurementContext.TAP_WATER)
+        assertContains(measurementContexts, MeasurementContext.BEFORE_AMENDMENTS)
+        assertContains(measurementContexts, MeasurementContext.AFTER_AMENDMENTS)
     }
 
     private fun createNewFarmstand(
