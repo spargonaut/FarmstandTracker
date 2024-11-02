@@ -1,6 +1,6 @@
 package com.farmstandtracker.model
 
 interface MeasurementRepository {
-    fun add(farmstandId: Int, newFarmstandMeasurement: NewFarmstandMeasurement): Int
-    fun allMeasurements(farmstandId: Int): List<FarmstandMeasurement>
+    suspend fun add(theFarmstandId: Int, newFarmstandMeasurement: NewFarmstandMeasurement): Int
+    suspend fun allMeasurements(farmstandId: Int): List<FarmstandMeasurement>
 }

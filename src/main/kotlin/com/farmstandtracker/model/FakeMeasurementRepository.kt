@@ -39,11 +39,11 @@ class FakeMeasurementRepository: MeasurementRepository {
             )
         )
 
-    override fun add(farmstandId: Int, newFarmstandMeasurement: NewFarmstandMeasurement): Int {
+    override suspend fun add(theFarmstandId: Int, newFarmstandMeasurement: NewFarmstandMeasurement): Int {
 
         val newId = Random.nextInt(0, 100000000)
         val newMeasurement = FarmstandMeasurement(
-            farmstandId = farmstandId,
+            farmstandId = theFarmstandId,
             measurementId = newId,
             date = newFarmstandMeasurement.date,
             context = newFarmstandMeasurement.context,
@@ -58,7 +58,7 @@ class FakeMeasurementRepository: MeasurementRepository {
         return newId
     }
 
-    override fun allMeasurements(farmstandId: Int): List<FarmstandMeasurement> {
+    override suspend fun allMeasurements(farmstandId: Int): List<FarmstandMeasurement> {
         return farmstandMeasurements.filter { it.farmstandId == farmstandId }
     }
 }
