@@ -1,4 +1,4 @@
-package com.farmstandtracker.model
+package com.farmstandtracker.domain.measurements
 
 import kotlinx.datetime.LocalDate
 import kotlin.random.Random

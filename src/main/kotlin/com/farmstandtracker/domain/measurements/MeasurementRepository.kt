@@ -1,4 +1,4 @@
-package com.farmstandtracker.model
+package com.farmstandtracker.domain.measurements
 
 interface MeasurementRepository {
     suspend fun add(theFarmstandId: Int, newFarmstandMeasurement: NewFarmstandMeasurement): Int

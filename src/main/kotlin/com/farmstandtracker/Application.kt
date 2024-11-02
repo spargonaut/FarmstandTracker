@@ -1,7 +1,7 @@
 package com.farmstandtracker
 
 import com.farmstandtracker.domain.farmstand.PostgresFarmstandRepository
-import com.farmstandtracker.model.PostgresMeasurementRepository
+import com.farmstandtracker.domain.measurements.PostgresMeasurementRepository
 import com.farmstandtracker.plugins.*
 import io.ktor.server.application.*
 

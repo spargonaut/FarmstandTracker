@@ -1,9 +1,9 @@
 package com.farmstandtracker.db
 
-import com.farmstandtracker.model.FarmstandMeasurement
-import com.farmstandtracker.model.MeasurementContext
-import com.farmstandtracker.model.Temperature
-import com.farmstandtracker.model.TemperatureMetric
+import com.farmstandtracker.domain.measurements.FarmstandMeasurement
+import com.farmstandtracker.domain.measurements.MeasurementContext
+import com.farmstandtracker.domain.measurements.Temperature
+import com.farmstandtracker.domain.measurements.TemperatureMetric
 import kotlinx.datetime.LocalDate
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass

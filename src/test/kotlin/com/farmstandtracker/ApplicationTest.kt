@@ -1,15 +1,15 @@
 package com.farmstandtracker
 
 import com.farmstandtracker.domain.farmstand.FakeFarmstandRepository
-import com.farmstandtracker.model.FakeMeasurementRepository
+import com.farmstandtracker.domain.measurements.FakeMeasurementRepository
 import com.farmstandtracker.domain.farmstand.Farmstand
-import com.farmstandtracker.model.FarmstandMeasurement
+import com.farmstandtracker.domain.measurements.FarmstandMeasurement
 import com.farmstandtracker.domain.farmstand.FarmstandShutdown
-import com.farmstandtracker.model.MeasurementContext
+import com.farmstandtracker.domain.measurements.MeasurementContext
 import com.farmstandtracker.domain.farmstand.NewFarmstand
-import com.farmstandtracker.model.NewFarmstandMeasurement
-import com.farmstandtracker.model.Temperature
-import com.farmstandtracker.model.TemperatureMetric
+import com.farmstandtracker.domain.measurements.NewFarmstandMeasurement
+import com.farmstandtracker.domain.measurements.Temperature
+import com.farmstandtracker.domain.measurements.TemperatureMetric
 import com.farmstandtracker.plugins.configureRouting
 import com.farmstandtracker.plugins.configureSerialization
 import io.ktor.client.HttpClient

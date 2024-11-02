@@ -1,4 +1,4 @@
-package com.farmstandtracker.model
+package com.farmstandtracker.domain.measurements
 
 import com.farmstandtracker.db.MeasurementDao
 import com.farmstandtracker.db.MeasurementTable

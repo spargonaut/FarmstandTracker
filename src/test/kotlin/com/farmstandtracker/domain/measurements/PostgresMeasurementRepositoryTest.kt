@@ -1,4 +1,4 @@
-package com.farmstandtracker.model
+package com.farmstandtracker.domain.measurements
 
 import com.farmstandtracker.domain.farmstand.NewFarmstand
 import com.farmstandtracker.domain.farmstand.PostgresFarmstandRepository
