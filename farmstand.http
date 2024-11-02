@@ -53,3 +53,23 @@ Content-Type: application/json
 
 ### DELETE
 DELETE http://0.0.0.0:8080/farmstand/beans
+
+
+### POST - Add Measurement
+POST http://0.0.0.0:8080/1/measurement
+Content-Type: application/json
+
+{
+  "date": "2024-10-26",
+  "context": "TAP_WATER",
+  "ph": 5.70,
+  "temp": {
+    "value": 19,
+    "metric": "CELCIUS"
+  },
+  "ec": 2.4,
+  "notes": "this is just the beginning"
+}
+
+### GET all measurements for a farmstand
+GET http://0.0.0.0:8080/1/measurement
