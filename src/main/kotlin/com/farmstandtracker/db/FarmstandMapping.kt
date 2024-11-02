@@ -1,6 +1,6 @@
 package com.farmstandtracker.db
 
-import com.farmstandtracker.model.Farmstand
+import com.farmstandtracker.domain.farmstand.Farmstand
 import kotlinx.coroutines.Dispatchers
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toKotlinLocalDate

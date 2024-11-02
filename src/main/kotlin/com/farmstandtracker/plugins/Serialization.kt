@@ -1,10 +1,10 @@
 package com.farmstandtracker.plugins
 
 import com.farmstandtracker.model.NewFarmstandMeasurement
-import com.farmstandtracker.model.FarmstandRepository
-import com.farmstandtracker.model.FarmstandShutdown
+import com.farmstandtracker.domain.farmstand.FarmstandRepository
+import com.farmstandtracker.domain.farmstand.FarmstandShutdown
 import com.farmstandtracker.model.MeasurementRepository
-import com.farmstandtracker.model.NewFarmstand
+import com.farmstandtracker.domain.farmstand.NewFarmstand
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.JsonConvertException
 import io.ktor.serialization.kotlinx.json.*

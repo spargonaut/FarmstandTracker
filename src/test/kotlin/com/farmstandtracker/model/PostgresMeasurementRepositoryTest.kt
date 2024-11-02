@@ -1,5 +1,7 @@
 package com.farmstandtracker.model
 
+import com.farmstandtracker.domain.farmstand.NewFarmstand
+import com.farmstandtracker.domain.farmstand.PostgresFarmstandRepository
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.LocalDate
 import org.jetbrains.exposed.sql.Database

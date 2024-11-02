@@ -1,4 +1,4 @@
-package com.farmstandtracker.model
+package com.farmstandtracker.domain.farmstand
 
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.LocalDate

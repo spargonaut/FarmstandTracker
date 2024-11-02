@@ -1,4 +1,4 @@
-package com.farmstandtracker.model
+package com.farmstandtracker.domain.farmstand
 
 import com.farmstandtracker.db.FarmstandDAO
 import com.farmstandtracker.db.FarmstandTable

@@ -1,4 +1,4 @@
-package com.farmstandtracker.model
+package com.farmstandtracker.domain.farmstand
 
 interface FarmstandRepository {
     suspend fun activeFarmstands(): List<Farmstand>

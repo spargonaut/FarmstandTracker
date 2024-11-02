@@ -1,12 +1,12 @@
 package com.farmstandtracker
 
-import com.farmstandtracker.model.FakeFarmstandRepository
+import com.farmstandtracker.domain.farmstand.FakeFarmstandRepository
 import com.farmstandtracker.model.FakeMeasurementRepository
-import com.farmstandtracker.model.Farmstand
+import com.farmstandtracker.domain.farmstand.Farmstand
 import com.farmstandtracker.model.FarmstandMeasurement
-import com.farmstandtracker.model.FarmstandShutdown
+import com.farmstandtracker.domain.farmstand.FarmstandShutdown
 import com.farmstandtracker.model.MeasurementContext
-import com.farmstandtracker.model.NewFarmstand
+import com.farmstandtracker.domain.farmstand.NewFarmstand
 import com.farmstandtracker.model.NewFarmstandMeasurement
 import com.farmstandtracker.model.Temperature
 import com.farmstandtracker.model.TemperatureMetric
