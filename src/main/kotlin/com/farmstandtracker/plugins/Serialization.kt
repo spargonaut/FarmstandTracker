@@ -1,10 +1,10 @@
 package com.farmstandtracker.plugins
 
-import com.farmstandtracker.domain.measurements.NewFarmstandMeasurement
 import com.farmstandtracker.domain.farmstand.FarmstandRepository
 import com.farmstandtracker.domain.farmstand.FarmstandShutdown
 import com.farmstandtracker.domain.measurements.MeasurementRepository
 import com.farmstandtracker.domain.farmstand.NewFarmstand
+import com.farmstandtracker.domain.measurements.measurements
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.JsonConvertException
 import io.ktor.serialization.kotlinx.json.*
@@ -103,37 +103,6 @@ fun Application.configureSerialization(
             }
         }
 
-        route("/{farmstandId}/measurement") {
-            post {
-                try {
-                    val farmstandId = call.parameters["farmstandId"]?.toIntOrNull()
-                    if (farmstandId == null) {
-                        call.respond(HttpStatusCode.BadRequest)
-                        return@post
-                    }
-
-                    val newFarmstandMeasurement = call.receive<NewFarmstandMeasurement>()
-                    val measurementId = measurementRepository.add(farmstandId, newFarmstandMeasurement)
-                    call.respond(HttpStatusCode.Created, measurementId)
-
-                } catch (ex: IllegalStateException) {
-                    call.respond(HttpStatusCode.BadRequest)
-                } catch (ex: JsonConvertException) {
-                    call.respond(HttpStatusCode.BadRequest)
-                }
-            }
-
-            get {
-                val farmstandId = call.parameters["farmstandId"]?.toIntOrNull()
-                if (farmstandId == null) {
-                    call.respond(HttpStatusCode.BadRequest)
-                    return@get
-                }
-
-                val measurements = measurementRepository.allMeasurements(farmstandId)
-                call.respond(HttpStatusCode.OK, measurements)
-            }
-
-        }
+        measurements(measurementRepository)
     }
 }
