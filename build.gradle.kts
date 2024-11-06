@@ -9,6 +9,7 @@ plugins {
     kotlin("jvm") version "2.0.0"
     id("io.ktor.plugin") version "2.3.11"
     id("org.jetbrains.kotlin.plugin.serialization") version "2.0.0"
+    idea
 }
 
 group = "com.farmstandtracker"
@@ -55,4 +56,35 @@ dependencies {
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
+}
+
+sourceSets {
+    create("integrationTest") {
+        kotlin.srcDir("$projectDir/src/integrationTest/kotlin")
+        compileClasspath += main.get().output + test.get().output
+        runtimeClasspath += main.get().output + test.get().output
+    }
+}
+
+val integrationTestImplementation by configurations.getting { extendsFrom(configurations.testImplementation.get()) }
+
+configurations["integrationTestRuntimeOnly"].extendsFrom(configurations.testRuntimeOnly.get())
+
+val integrationTest =
+    task<Test>("integrationTest") {
+        description = "Runs integration tests."
+        group = "verification"
+
+        testClassesDirs = sourceSets["integrationTest"].output.classesDirs
+        classpath = sourceSets["integrationTest"].runtimeClasspath
+        shouldRunAfter("test")
+        useJUnitPlatform()
+        testLogging { events("passed") }
+    }
+
+idea {
+    module {
+        testSources.setFrom(sourceSets["integrationTest"].java.srcDirs)
+        testResources.setFrom(sourceSets["integrationTest"].resources.srcDirs)
+    }
 }
